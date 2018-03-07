@@ -6,6 +6,7 @@ import argparse
 import motion
 import almath
 import time
+import getch
 from naoqi import ALProxy
 
 def main(robotIP, PORT=9559):
@@ -28,81 +29,69 @@ def main(robotIP, PORT=9559):
 
     # end go to Stand Init, begin initialize whole body
 
-    # Enable Whole Body Balancer
+    # Enable Whole Body Motion
     isEnabled  = True
     motionProxy.wbEnable(isEnabled)
 
     # Legs are constrained fixed
-    stateName  = "Fixed"
+    stateName  = "Plane"
     supportLeg = "Legs"
     motionProxy.wbFootState(stateName, supportLeg)
 
     # Do not constraint Balance Motion
+    # I will constrain it with haptic teleoperation
     isEnable   = False
     supportLeg = "Legs"
     motionProxy.wbEnableBalanceConstraint(isEnable, supportLeg)
-
     # end initialize whole body, define arms motions
 
-    useSensorValues = False
-
     # Arms motion
-    effectorList = ["LArm", "RArm"]
-
+    effectorList = ["RArm", "LArm"]
+    useSensorValues = False
     frame        = motion.FRAME_ROBOT
-
-    # pathLArm
-    pathLArm = []
-    currentTf = motionProxy.getTransform("LArm", frame, useSensorValues)
-    # 1
-    target1Tf  = almath.Transform(currentTf)
-    target1Tf.r2_c4 += 0.15 # y
-    target1Tf.r3_c4 += 0.14 # z
-
-    # 2
-    target2Tf  = almath.Transform(currentTf)
-    target2Tf.r2_c4 -= 0.05 # y
-    target2Tf.r3_c4 -= 0.07 # z
-
-    pathLArm.append(list(target1Tf.toVector()))
-    pathLArm.append(list(target2Tf.toVector()))
-    pathLArm.append(list(target1Tf.toVector()))
-    pathLArm.append(list(target2Tf.toVector()))
-    pathLArm.append(list(target1Tf.toVector()))
-
-    # pathRArm
-    pathRArm = []
-    currentTf = motionProxy.getTransform("RArm", frame, useSensorValues)
-    # 1
-    target1Tf  = almath.Transform(currentTf)
-    target1Tf.r2_c4 += 0.15 # y
-    target1Tf.r3_c4 -= 0.07 # z
-
-    # 2
-    target2Tf  = almath.Transform(currentTf)
-    target2Tf.r2_c4 -= 0.08 # y
-    target2Tf.r3_c4 += 0.14 # z
-
-    pathRArm.append(list(target1Tf.toVector()))
-    pathRArm.append(list(target2Tf.toVector()))
-    pathRArm.append(list(target1Tf.toVector()))
-    pathRArm.append(list(target2Tf.toVector()))
-    pathRArm.append(list(target1Tf.toVector()))
-    pathRArm.append(list(target2Tf.toVector()))
-
-    pathList = [pathLArm, pathRArm]
-
+    timesList = [ [0.5], [0.5]] # move in 1.5 seconds
     axisMaskList = [almath.AXIS_MASK_VEL, # for "LArm"
                     almath.AXIS_MASK_VEL] # for "RArm"
 
-    coef       = 1.5
-    timesList  = [ [coef*(i+1) for i in range(5)],  # for "LArm" in seconds
-                   [coef*(i+1) for i in range(6)] ] # for "RArm" in seconds
-
-    # called cartesian interpolation
-    motionProxy.transformInterpolations(effectorList, frame, pathList, axisMaskList, timesList)
-
-    # end define arms motions
+    print "Starting teleop\n"
+    teleop = True
+    while teleop:
+        pathLArm = []
+        pathRArm = []
+        c = getch.getch()
+        # Retrieve current transform from ALMotion.
+        # Convert it to a transform matrix for ALMath.
+        currentTfR = motionProxy.getTransform("RArm", frame, useSensorValues)
+        currentTfL = motionProxy.getTransform("LArm", frame, useSensorValues)
+        targetTfR  = almath.Transform(currentTfR)
+        targetTfL  = almath.Transform(currentTfL)
+        if c == 'w': # +x
+            targetTfR.r1_c4 += 0.025
+            targetTfL.r1_c4 += 0.025
+        elif c == 's': # -x
+            targetTfR.r1_c4 -= 0.025
+            targetTfL.r1_c4 -= 0.025
+        elif c == 'd': # y
+            targetTfR.r2_c4 += 0.025
+            targetTfL.r2_c4 -= 0.025
+        elif c == 'a': # y
+            targetTfR.r2_c4 -= 0.025
+            targetTfL.r2_c4 += 0.025
+        elif c == 'r': # +z
+            targetTfR.r3_c4 += 0.025
+            targetTfL.r3_c4 += 0.025
+        elif c == 'f': # -z
+            targetTfR.r3_c4 -= 0.025
+            targetTfL.r3_c4 -= 0.025
+        elif c == 'x':
+            teleop = False
+        print "Got input: " + c
+        
+        pathRArm.append(list(targetTfR.toVector()))
+        pathLArm.append(list(targetTfL.toVector()))
+        pathList = [pathRArm, pathLArm]
+        motionProxy.transformInterpolations(effectorList, frame, pathList,
+                                                     axisMaskList, timesList)
 
     # Deactivate whole body
     isEnabled    = False
