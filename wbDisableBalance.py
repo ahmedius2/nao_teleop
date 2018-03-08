@@ -30,26 +30,21 @@ def main(robotIP, PORT=9559):
     # end go to Stand Init, begin initialize whole body
 
     # Enable Whole Body Motion
-    isEnabled  = True
-    motionProxy.wbEnable(isEnabled)
+    motionProxy.wbEnable(True)
 
     # Legs are constrained fixed
-    stateName  = "Plane"
-    supportLeg = "Legs"
-    motionProxy.wbFootState(stateName, supportLeg)
+    motionProxy.wbFootState("Plane", "Legs")
 
     # Do not constraint Balance Motion
     # I will constrain it with haptic teleoperation
-    isEnable   = False
-    supportLeg = "Legs"
-    motionProxy.wbEnableBalanceConstraint(isEnable, supportLeg)
+    motionProxy.wbEnableBalanceConstraint(False, "Legs")
     # end initialize whole body, define arms motions
 
     # Arms motion
     effectorList = ["RArm", "LArm"]
     useSensorValues = False
     frame        = motion.FRAME_ROBOT
-    timesList = [ [0.5], [0.5]] # move in 1.5 seconds
+    timesList = [ [0.8], [0.8]] # move in 0.8 seconds
     axisMaskList = [almath.AXIS_MASK_VEL, # for "LArm"
                     almath.AXIS_MASK_VEL] # for "RArm"
 
@@ -83,9 +78,19 @@ def main(robotIP, PORT=9559):
         elif c == 'f': # -z
             targetTfR.r3_c4 -= 0.025
             targetTfL.r3_c4 -= 0.025
+        elif c == '1':
+            motionProxy.wbEnable(True)
+            motionProxy.wbFootState("Plane", "Legs")
+            motionProxy.wbEnableBalanceConstraint(False, "Legs")
+            print 'Whole body motion enabled'
+        elif c== '2':
+            motionProxy.wbEnable(False)
+            print 'Whole body motion disabled'
         elif c == 'x':
             teleop = False
         print "Got input: " + c
+        print targetTfR
+        print targetTfL
         
         pathRArm.append(list(targetTfR.toVector()))
         pathLArm.append(list(targetTfL.toVector()))
