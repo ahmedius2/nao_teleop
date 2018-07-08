@@ -1,0 +1,1386 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9348a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9348a.dir/build.make CMakeFiles/cmTC_9348a.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9348a.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_9348a.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_9348a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9348a.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_9348a.dir/CheckSymbolExists.c.o  -o cmTC_9348a 
+CMakeFiles/cmTC_9348a.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_9348a.dir/build.make:97: recipe for target 'cmTC_9348a' failed
+make[1]: *** [cmTC_9348a] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_9348a/fast' failed
+make: *** [cmTC_9348a/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_aeee9/fast"
+/usr/bin/make -f CMakeFiles/cmTC_aeee9.dir/build.make CMakeFiles/cmTC_aeee9.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_aeee9.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_aeee9.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_aeee9
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aeee9.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_aeee9.dir/CheckFunctionExists.c.o  -o cmTC_aeee9 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_aeee9.dir/build.make:97: recipe for target 'cmTC_aeee9' failed
+make[1]: *** [cmTC_aeee9] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_aeee9/fast' failed
+make: *** [cmTC_aeee9/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_7a771/fast"
+/usr/bin/make -f CMakeFiles/cmTC_7a771.dir/build.make CMakeFiles/cmTC_7a771.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7a771.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_7a771.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_7a771
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7a771.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_7a771.dir/CheckSymbolExists.c.o  -o cmTC_7a771 
+CMakeFiles/cmTC_7a771.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_7a771.dir/build.make:97: recipe for target 'cmTC_7a771' failed
+make[1]: *** [cmTC_7a771] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_7a771/fast' failed
+make: *** [cmTC_7a771/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_1ccf7/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1ccf7.dir/build.make CMakeFiles/cmTC_1ccf7.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1ccf7.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_1ccf7.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_1ccf7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1ccf7.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_1ccf7.dir/CheckFunctionExists.c.o  -o cmTC_1ccf7 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_1ccf7.dir/build.make:97: recipe for target 'cmTC_1ccf7' failed
+make[1]: *** [cmTC_1ccf7] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_1ccf7/fast' failed
+make: *** [cmTC_1ccf7/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9c4e5/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9c4e5.dir/build.make CMakeFiles/cmTC_9c4e5.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9c4e5.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_9c4e5.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_9c4e5
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9c4e5.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_9c4e5.dir/CheckSymbolExists.c.o  -o cmTC_9c4e5 
+CMakeFiles/cmTC_9c4e5.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_9c4e5.dir/build.make:97: recipe for target 'cmTC_9c4e5' failed
+make[1]: *** [cmTC_9c4e5] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_9c4e5/fast' failed
+make: *** [cmTC_9c4e5/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_59856/fast"
+/usr/bin/make -f CMakeFiles/cmTC_59856.dir/build.make CMakeFiles/cmTC_59856.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_59856.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_59856.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_59856
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_59856.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_59856.dir/CheckFunctionExists.c.o  -o cmTC_59856 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_59856.dir/build.make:97: recipe for target 'cmTC_59856' failed
+make[1]: *** [cmTC_59856] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_59856/fast' failed
+make: *** [cmTC_59856/fast] Error 2
+
+
+Determining if the Q_WS_WIN exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_456e0/fast"
+/usr/bin/make -f CMakeFiles/cmTC_456e0.dir/build.make CMakeFiles/cmTC_456e0.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_456e0.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_456e0.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_WIN’ was not declared in this scope
+   return ((int*)(&Q_WS_WIN))[argc];
+                   ^
+CMakeFiles/cmTC_456e0.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_456e0.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_456e0.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_456e0/fast' failed
+make: *** [cmTC_456e0/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_WIN
+  return ((int*)(&Q_WS_WIN))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_QWS exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_a986f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_a986f.dir/build.make CMakeFiles/cmTC_a986f.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_a986f.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_a986f.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_QWS’ was not declared in this scope
+   return ((int*)(&Q_WS_QWS))[argc];
+                   ^
+CMakeFiles/cmTC_a986f.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_a986f.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_a986f.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_a986f/fast' failed
+make: *** [cmTC_a986f/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_QWS
+  return ((int*)(&Q_WS_QWS))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_MAC exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_5e555/fast"
+/usr/bin/make -f CMakeFiles/cmTC_5e555.dir/build.make CMakeFiles/cmTC_5e555.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_5e555.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_5e555.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_MAC’ was not declared in this scope
+   return ((int*)(&Q_WS_MAC))[argc];
+                   ^
+CMakeFiles/cmTC_5e555.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_5e555.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_5e555.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_5e555/fast' failed
+make: *** [cmTC_5e555/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_MAC
+  return ((int*)(&Q_WS_MAC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_ee261/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ee261.dir/build.make CMakeFiles/cmTC_ee261.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ee261.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_ee261.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_ee261
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ee261.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_ee261.dir/CheckSymbolExists.c.o  -o cmTC_ee261 
+CMakeFiles/cmTC_ee261.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_ee261.dir/build.make:97: recipe for target 'cmTC_ee261' failed
+make[1]: *** [cmTC_ee261] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_ee261/fast' failed
+make: *** [cmTC_ee261/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_79a1d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_79a1d.dir/build.make CMakeFiles/cmTC_79a1d.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_79a1d.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_79a1d.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_79a1d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_79a1d.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_79a1d.dir/CheckFunctionExists.c.o  -o cmTC_79a1d -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_79a1d.dir/build.make:97: recipe for target 'cmTC_79a1d' failed
+make[1]: *** [cmTC_79a1d] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_79a1d/fast' failed
+make: *** [cmTC_79a1d/fast] Error 2
+
+
+Determining if the Q_WS_WIN exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_69b15/fast"
+/usr/bin/make -f CMakeFiles/cmTC_69b15.dir/build.make CMakeFiles/cmTC_69b15.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_69b15.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_69b15.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_WIN’ was not declared in this scope
+   return ((int*)(&Q_WS_WIN))[argc];
+                   ^
+CMakeFiles/cmTC_69b15.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_69b15.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_69b15.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_69b15/fast' failed
+make: *** [cmTC_69b15/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_WIN
+  return ((int*)(&Q_WS_WIN))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_QWS exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_4c28c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4c28c.dir/build.make CMakeFiles/cmTC_4c28c.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_4c28c.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_4c28c.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_QWS’ was not declared in this scope
+   return ((int*)(&Q_WS_QWS))[argc];
+                   ^
+CMakeFiles/cmTC_4c28c.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_4c28c.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_4c28c.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_4c28c/fast' failed
+make: *** [cmTC_4c28c/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_QWS
+  return ((int*)(&Q_WS_QWS))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_MAC exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6a6e7/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6a6e7.dir/build.make CMakeFiles/cmTC_6a6e7.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_6a6e7.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_6a6e7.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_MAC’ was not declared in this scope
+   return ((int*)(&Q_WS_MAC))[argc];
+                   ^
+CMakeFiles/cmTC_6a6e7.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_6a6e7.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_6a6e7.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_6a6e7/fast' failed
+make: *** [cmTC_6a6e7/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_MAC
+  return ((int*)(&Q_WS_MAC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9409e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9409e.dir/build.make CMakeFiles/cmTC_9409e.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9409e.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_9409e.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_9409e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9409e.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_9409e.dir/CheckSymbolExists.c.o  -o cmTC_9409e 
+CMakeFiles/cmTC_9409e.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_9409e.dir/build.make:97: recipe for target 'cmTC_9409e' failed
+make[1]: *** [cmTC_9409e] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_9409e/fast' failed
+make: *** [cmTC_9409e/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_25e69/fast"
+/usr/bin/make -f CMakeFiles/cmTC_25e69.dir/build.make CMakeFiles/cmTC_25e69.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_25e69.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_25e69.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_25e69
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_25e69.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_25e69.dir/CheckFunctionExists.c.o  -o cmTC_25e69 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_25e69.dir/build.make:97: recipe for target 'cmTC_25e69' failed
+make[1]: *** [cmTC_25e69] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_25e69/fast' failed
+make: *** [cmTC_25e69/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_ff288/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ff288.dir/build.make CMakeFiles/cmTC_ff288.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ff288.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_ff288.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_ff288
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ff288.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_ff288.dir/CheckSymbolExists.c.o  -o cmTC_ff288 
+CMakeFiles/cmTC_ff288.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_ff288.dir/build.make:97: recipe for target 'cmTC_ff288' failed
+make[1]: *** [cmTC_ff288] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_ff288/fast' failed
+make: *** [cmTC_ff288/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_5bf72/fast"
+/usr/bin/make -f CMakeFiles/cmTC_5bf72.dir/build.make CMakeFiles/cmTC_5bf72.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5bf72.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_5bf72.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_5bf72
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5bf72.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_5bf72.dir/CheckFunctionExists.c.o  -o cmTC_5bf72 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_5bf72.dir/build.make:97: recipe for target 'cmTC_5bf72' failed
+make[1]: *** [cmTC_5bf72] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_5bf72/fast' failed
+make: *** [cmTC_5bf72/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_dae35/fast"
+/usr/bin/make -f CMakeFiles/cmTC_dae35.dir/build.make CMakeFiles/cmTC_dae35.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_dae35.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_dae35.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_dae35
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dae35.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_dae35.dir/CheckSymbolExists.c.o  -o cmTC_dae35 
+CMakeFiles/cmTC_dae35.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_dae35.dir/build.make:97: recipe for target 'cmTC_dae35' failed
+make[1]: *** [cmTC_dae35] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_dae35/fast' failed
+make: *** [cmTC_dae35/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_68db3/fast"
+/usr/bin/make -f CMakeFiles/cmTC_68db3.dir/build.make CMakeFiles/cmTC_68db3.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_68db3.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_68db3.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_68db3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_68db3.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_68db3.dir/CheckFunctionExists.c.o  -o cmTC_68db3 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_68db3.dir/build.make:97: recipe for target 'cmTC_68db3' failed
+make[1]: *** [cmTC_68db3] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_68db3/fast' failed
+make: *** [cmTC_68db3/fast] Error 2
+
+
+Determining if the Q_WS_WIN exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c986f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c986f.dir/build.make CMakeFiles/cmTC_c986f.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_c986f.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_c986f.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_WIN’ was not declared in this scope
+   return ((int*)(&Q_WS_WIN))[argc];
+                   ^
+CMakeFiles/cmTC_c986f.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_c986f.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_c986f.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_c986f/fast' failed
+make: *** [cmTC_c986f/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_WIN
+  return ((int*)(&Q_WS_WIN))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_QWS exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f6596/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f6596.dir/build.make CMakeFiles/cmTC_f6596.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_f6596.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_f6596.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_QWS’ was not declared in this scope
+   return ((int*)(&Q_WS_QWS))[argc];
+                   ^
+CMakeFiles/cmTC_f6596.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_f6596.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_f6596.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_f6596/fast' failed
+make: *** [cmTC_f6596/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_QWS
+  return ((int*)(&Q_WS_QWS))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_MAC exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_2f900/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2f900.dir/build.make CMakeFiles/cmTC_2f900.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_2f900.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_2f900.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_MAC’ was not declared in this scope
+   return ((int*)(&Q_WS_MAC))[argc];
+                   ^
+CMakeFiles/cmTC_2f900.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_2f900.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_2f900.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_2f900/fast' failed
+make: *** [cmTC_2f900/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_MAC
+  return ((int*)(&Q_WS_MAC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_3364b/fast"
+/usr/bin/make -f CMakeFiles/cmTC_3364b.dir/build.make CMakeFiles/cmTC_3364b.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3364b.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_3364b.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_3364b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3364b.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_3364b.dir/CheckSymbolExists.c.o  -o cmTC_3364b 
+CMakeFiles/cmTC_3364b.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_3364b.dir/build.make:97: recipe for target 'cmTC_3364b' failed
+make[1]: *** [cmTC_3364b] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_3364b/fast' failed
+make: *** [cmTC_3364b/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_8a722/fast"
+/usr/bin/make -f CMakeFiles/cmTC_8a722.dir/build.make CMakeFiles/cmTC_8a722.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_8a722.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_8a722.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_8a722
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8a722.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_8a722.dir/CheckFunctionExists.c.o  -o cmTC_8a722 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_8a722.dir/build.make:97: recipe for target 'cmTC_8a722' failed
+make[1]: *** [cmTC_8a722] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_8a722/fast' failed
+make: *** [cmTC_8a722/fast] Error 2
+
+
+Determining if the Q_WS_WIN exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b8ded/fast"
+/usr/bin/make -f CMakeFiles/cmTC_b8ded.dir/build.make CMakeFiles/cmTC_b8ded.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_b8ded.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_b8ded.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_WIN’ was not declared in this scope
+   return ((int*)(&Q_WS_WIN))[argc];
+                   ^
+CMakeFiles/cmTC_b8ded.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_b8ded.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_b8ded.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_b8ded/fast' failed
+make: *** [cmTC_b8ded/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_WIN
+  return ((int*)(&Q_WS_WIN))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_QWS exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_ded8b/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ded8b.dir/build.make CMakeFiles/cmTC_ded8b.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_ded8b.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_ded8b.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_QWS’ was not declared in this scope
+   return ((int*)(&Q_WS_QWS))[argc];
+                   ^
+CMakeFiles/cmTC_ded8b.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_ded8b.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_ded8b.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_ded8b/fast' failed
+make: *** [cmTC_ded8b/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_QWS
+  return ((int*)(&Q_WS_QWS))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_MAC exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_968df/fast"
+/usr/bin/make -f CMakeFiles/cmTC_968df.dir/build.make CMakeFiles/cmTC_968df.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_968df.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++   -I/usr/include/qt4  -std=c++0x    -o CMakeFiles/cmTC_968df.dir/CheckSymbolExists.cxx.o -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_MAC’ was not declared in this scope
+   return ((int*)(&Q_WS_MAC))[argc];
+                   ^
+CMakeFiles/cmTC_968df.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_968df.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_968df.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_968df/fast' failed
+make: *** [cmTC_968df/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_MAC
+  return ((int*)(&Q_WS_MAC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_3c786/fast"
+/usr/bin/make -f CMakeFiles/cmTC_3c786.dir/build.make CMakeFiles/cmTC_3c786.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3c786.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_3c786.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_3c786
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3c786.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_3c786.dir/CheckSymbolExists.c.o  -o cmTC_3c786 
+CMakeFiles/cmTC_3c786.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_3c786.dir/build.make:97: recipe for target 'cmTC_3c786' failed
+make[1]: *** [cmTC_3c786] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_3c786/fast' failed
+make: *** [cmTC_3c786/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_76f29/fast"
+/usr/bin/make -f CMakeFiles/cmTC_76f29.dir/build.make CMakeFiles/cmTC_76f29.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_76f29.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_76f29.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_76f29
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_76f29.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_76f29.dir/CheckFunctionExists.c.o  -o cmTC_76f29 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_76f29.dir/build.make:97: recipe for target 'cmTC_76f29' failed
+make[1]: *** [cmTC_76f29] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_76f29/fast' failed
+make: *** [cmTC_76f29/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f7dd1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f7dd1.dir/build.make CMakeFiles/cmTC_f7dd1.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f7dd1.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_f7dd1.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_f7dd1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f7dd1.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_f7dd1.dir/CheckSymbolExists.c.o  -o cmTC_f7dd1 
+CMakeFiles/cmTC_f7dd1.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_f7dd1.dir/build.make:97: recipe for target 'cmTC_f7dd1' failed
+make[1]: *** [cmTC_f7dd1] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_f7dd1/fast' failed
+make: *** [cmTC_f7dd1/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_848ac/fast"
+/usr/bin/make -f CMakeFiles/cmTC_848ac.dir/build.make CMakeFiles/cmTC_848ac.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_848ac.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_848ac.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_848ac
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_848ac.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_848ac.dir/CheckFunctionExists.c.o  -o cmTC_848ac -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_848ac.dir/build.make:97: recipe for target 'cmTC_848ac' failed
+make[1]: *** [cmTC_848ac] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_848ac/fast' failed
+make: *** [cmTC_848ac/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_795c7/fast"
+/usr/bin/make -f CMakeFiles/cmTC_795c7.dir/build.make CMakeFiles/cmTC_795c7.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_795c7.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_795c7.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_795c7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_795c7.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_795c7.dir/CheckSymbolExists.c.o  -o cmTC_795c7 
+CMakeFiles/cmTC_795c7.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_795c7.dir/build.make:97: recipe for target 'cmTC_795c7' failed
+make[1]: *** [cmTC_795c7] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_795c7/fast' failed
+make: *** [cmTC_795c7/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_0c3cf/fast"
+/usr/bin/make -f CMakeFiles/cmTC_0c3cf.dir/build.make CMakeFiles/cmTC_0c3cf.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0c3cf.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_0c3cf.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_0c3cf
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0c3cf.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_0c3cf.dir/CheckFunctionExists.c.o  -o cmTC_0c3cf -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_0c3cf.dir/build.make:97: recipe for target 'cmTC_0c3cf' failed
+make[1]: *** [cmTC_0c3cf] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_0c3cf/fast' failed
+make: *** [cmTC_0c3cf/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f792b/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f792b.dir/build.make CMakeFiles/cmTC_f792b.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f792b.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_f792b.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_f792b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f792b.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_f792b.dir/CheckSymbolExists.c.o  -o cmTC_f792b 
+CMakeFiles/cmTC_f792b.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_f792b.dir/build.make:97: recipe for target 'cmTC_f792b' failed
+make[1]: *** [cmTC_f792b] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_f792b/fast' failed
+make: *** [cmTC_f792b/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9efab/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9efab.dir/build.make CMakeFiles/cmTC_9efab.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9efab.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_9efab.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_9efab
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9efab.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_9efab.dir/CheckFunctionExists.c.o  -o cmTC_9efab -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_9efab.dir/build.make:97: recipe for target 'cmTC_9efab' failed
+make[1]: *** [cmTC_9efab] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_9efab/fast' failed
+make: *** [cmTC_9efab/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_11f22/fast"
+/usr/bin/make -f CMakeFiles/cmTC_11f22.dir/build.make CMakeFiles/cmTC_11f22.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_11f22.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_11f22.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_11f22
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_11f22.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_11f22.dir/CheckSymbolExists.c.o  -o cmTC_11f22 
+CMakeFiles/cmTC_11f22.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_11f22.dir/build.make:97: recipe for target 'cmTC_11f22' failed
+make[1]: *** [cmTC_11f22] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_11f22/fast' failed
+make: *** [cmTC_11f22/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_18b33/fast"
+/usr/bin/make -f CMakeFiles/cmTC_18b33.dir/build.make CMakeFiles/cmTC_18b33.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_18b33.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_18b33.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_18b33
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_18b33.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_18b33.dir/CheckFunctionExists.c.o  -o cmTC_18b33 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_18b33.dir/build.make:97: recipe for target 'cmTC_18b33' failed
+make[1]: *** [cmTC_18b33] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_18b33/fast' failed
+make: *** [cmTC_18b33/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_3cc82/fast"
+/usr/bin/make -f CMakeFiles/cmTC_3cc82.dir/build.make CMakeFiles/cmTC_3cc82.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3cc82.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_3cc82.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_3cc82
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3cc82.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_3cc82.dir/CheckSymbolExists.c.o  -o cmTC_3cc82 
+CMakeFiles/cmTC_3cc82.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_3cc82.dir/build.make:97: recipe for target 'cmTC_3cc82' failed
+make[1]: *** [cmTC_3cc82] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_3cc82/fast' failed
+make: *** [cmTC_3cc82/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_acc67/fast"
+/usr/bin/make -f CMakeFiles/cmTC_acc67.dir/build.make CMakeFiles/cmTC_acc67.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_acc67.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_acc67.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_acc67
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_acc67.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_acc67.dir/CheckFunctionExists.c.o  -o cmTC_acc67 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_acc67.dir/build.make:97: recipe for target 'cmTC_acc67' failed
+make[1]: *** [cmTC_acc67] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_acc67/fast' failed
+make: *** [cmTC_acc67/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_4f1cd/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4f1cd.dir/build.make CMakeFiles/cmTC_4f1cd.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4f1cd.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_4f1cd.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_4f1cd
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4f1cd.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_4f1cd.dir/CheckSymbolExists.c.o  -o cmTC_4f1cd 
+CMakeFiles/cmTC_4f1cd.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_4f1cd.dir/build.make:97: recipe for target 'cmTC_4f1cd' failed
+make[1]: *** [cmTC_4f1cd] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_4f1cd/fast' failed
+make: *** [cmTC_4f1cd/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_a2bf2/fast"
+/usr/bin/make -f CMakeFiles/cmTC_a2bf2.dir/build.make CMakeFiles/cmTC_a2bf2.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a2bf2.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_a2bf2.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_a2bf2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a2bf2.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_a2bf2.dir/CheckFunctionExists.c.o  -o cmTC_a2bf2 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_a2bf2.dir/build.make:97: recipe for target 'cmTC_a2bf2' failed
+make[1]: *** [cmTC_a2bf2] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_a2bf2/fast' failed
+make: *** [cmTC_a2bf2/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_23c81/fast"
+/usr/bin/make -f CMakeFiles/cmTC_23c81.dir/build.make CMakeFiles/cmTC_23c81.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_23c81.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_23c81.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_23c81
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_23c81.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_23c81.dir/CheckSymbolExists.c.o  -o cmTC_23c81 
+CMakeFiles/cmTC_23c81.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_23c81.dir/build.make:97: recipe for target 'cmTC_23c81' failed
+make[1]: *** [cmTC_23c81] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_23c81/fast' failed
+make: *** [cmTC_23c81/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_4eb28/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4eb28.dir/build.make CMakeFiles/cmTC_4eb28.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4eb28.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_4eb28.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_4eb28
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4eb28.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_4eb28.dir/CheckFunctionExists.c.o  -o cmTC_4eb28 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_4eb28.dir/build.make:97: recipe for target 'cmTC_4eb28' failed
+make[1]: *** [cmTC_4eb28] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_4eb28/fast' failed
+make: *** [cmTC_4eb28/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_4675a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4675a.dir/build.make CMakeFiles/cmTC_4675a.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4675a.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_4675a.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_4675a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4675a.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_4675a.dir/CheckSymbolExists.c.o  -o cmTC_4675a 
+CMakeFiles/cmTC_4675a.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_4675a.dir/build.make:97: recipe for target 'cmTC_4675a' failed
+make[1]: *** [cmTC_4675a] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_4675a/fast' failed
+make: *** [cmTC_4675a/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_8f4a1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_8f4a1.dir/build.make CMakeFiles/cmTC_8f4a1.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_8f4a1.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_8f4a1.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_8f4a1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8f4a1.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_8f4a1.dir/CheckFunctionExists.c.o  -o cmTC_8f4a1 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_8f4a1.dir/build.make:97: recipe for target 'cmTC_8f4a1' failed
+make[1]: *** [cmTC_8f4a1] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_8f4a1/fast' failed
+make: *** [cmTC_8f4a1/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_caf6f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_caf6f.dir/build.make CMakeFiles/cmTC_caf6f.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_caf6f.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_caf6f.dir/CheckSymbolExists.c.o   -c /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_caf6f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_caf6f.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_caf6f.dir/CheckSymbolExists.c.o  -o cmTC_caf6f 
+CMakeFiles/cmTC_caf6f.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_caf6f.dir/build.make:97: recipe for target 'cmTC_caf6f' failed
+make[1]: *** [cmTC_caf6f] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_caf6f/fast' failed
+make: *** [cmTC_caf6f/fast] Error 2
+
+File /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b96c9/fast"
+/usr/bin/make -f CMakeFiles/cmTC_b96c9.dir/build.make CMakeFiles/cmTC_b96c9.dir/build
+make[1]: Entering directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b96c9.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_b96c9.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_b96c9
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b96c9.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_b96c9.dir/CheckFunctionExists.c.o  -o cmTC_b96c9 -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_b96c9.dir/build.make:97: recipe for target 'cmTC_b96c9' failed
+make[1]: *** [cmTC_b96c9] Error 1
+make[1]: Leaving directory '/home/hapticpc/nao/nao_teleop/HapticTeleop/build-localtc/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_b96c9/fast' failed
+make: *** [cmTC_b96c9/fast] Error 2
+
+
