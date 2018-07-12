@@ -2,6 +2,7 @@
 # define TELEOPMODULE_H
 
 #include <alcommon/almodule.h>
+#include <alcommon/albroker.h>
 
 #include <alproxies/altexttospeechproxy.h>
 #include <alproxies/almotionproxy.h>
@@ -9,13 +10,14 @@
 #include <boost/thread.hpp>
 #include <boost/atomic.hpp>
 
+#include "cameraserver.h"
 
-namespace AL
-{
+//namespace AL
+//{
 // This is a forward declaration of AL:ALBroker which
 // avoids including <alcommon/albroker.h> in this header
-class ALBroker;
-}
+//class ALBroker;
+//}
 
 /**
  * This class inherits AL::ALModule. This allows it to bind methods
@@ -61,7 +63,9 @@ private:
     AL::ALTextToSpeechProxy ttsProxy;
 
     boost::atomic<TeleopMode> currentMode;
-    boost::mutex mtx;
     float lastOpCoords[6];
+    boost::mutex mtx; // protect lastOpCoords
+
+    CameraServer *cs;
 };
 #endif // TELEOPMODULE_H

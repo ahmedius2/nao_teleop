@@ -6,17 +6,38 @@ project(TeleopModule)
 # You need this to find the qiBuild CMake framework
 find_package(qibuild)
 
+option(TELEOPMODULE_IS_REMOTE
+  "module is compiled as a remote module (ON or OFF)"
+  ON)
+
+
+add_definitions(-DBOOST_SIGNALS_NO_DEPRECATION_WARNING )
+
+include_directories(".")
+
 # Create a list of source files
 set(_srcs
-    TeleopModule.cpp
+    cameraserver.h
+    cameraserver.cpp
     TeleopModule.h
+    TeleopModule.cpp
     main.cpp)
 
-# Create a plugin, that is a shared library, and make
-# sure it is built in lib/naoqi
-qi_create_lib(TeleopModule SHARED ${_srcs} SUBFOLDER naoqi)
+if(TELEOPMODULE_IS_REMOTE)
+  add_definitions( " -DTELEOPMODULE_IS_REMOTE ")
+  # Create an executable
+  qi_create_bin(TeleopModule ${_srcs})
+else()
+  qi_create_lib(TeleopModule SHARED ${_srcs} SUBFOLDER naoqi)
+endif()
+
 
 # Tell CMake that TeleopModule depends on ALCOMMON and ALPROXIES.
 # This will set the libraries to link TeleopModule with,
 # the include paths, and so on
-qi_use_lib(TeleopModule ALCOMMON ALPROXIES BOOST)
+qi_use_lib(TeleopModule ALCOMMON ALVISION ALPROXIES BOOST )
+
+#qi_create_bin(testTeleopModule testTeleopModule.cpp)
+#qi_use_lib(testTeleopModule ALCOMMON ALVISION ALPROXIES BOOST)
+qi_create_bin(testTeleopModule testTeleopModule.cpp)
+qi_use_lib(testTeleopModule ALCOMMON ALPROXIES BOOST)

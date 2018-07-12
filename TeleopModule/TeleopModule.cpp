@@ -1,10 +1,13 @@
 #include "TeleopModule.h"
 
-#include <alcommon/albroker.h>
-
+#include <qi/log.hpp>
+#include <alvision/alimage.h>
+#include <string>
 TeleopModule::TeleopModule(boost::shared_ptr<AL::ALBroker> broker,
                            const std::string& name)
     : AL::ALModule(broker, name),
+      motionProxy(getParentBroker()),
+      ttsProxy(getParentBroker()),
       currentMode(STOPPED)
 {
     lastOpCoords[0] = 0; lastOpCoords[1] = 0; lastOpCoords[2] = 0;
@@ -13,10 +16,10 @@ TeleopModule::TeleopModule(boost::shared_ptr<AL::ALBroker> broker,
     // Describe the module here. This will appear on the webpage
     setModuleDescription("Teleoperation module.");
 
-    functionName("startTeleoperation", getName(), "Starts the teleoperation");
+    functionName("startTeleop", getName(), "Starts the teleoperation");
     BIND_METHOD(TeleopModule::startTeleop);
 
-    functionName("stopTeleoperation", getName(), "Stops the teleoperation");
+    functionName("stopTeleop", getName(), "Stops the teleoperation");
     BIND_METHOD(TeleopModule::stopTeleop);
 
     functionName("changeMode", getName(), "Changes teleoperation mode.");
@@ -38,10 +41,15 @@ TeleopModule::TeleopModule(boost::shared_ptr<AL::ALBroker> broker,
     * Bound methods can only take const ref arguments of basic types,
     * or AL::ALValue or return basic types or an AL::ALValue.
     */
+
+    cs = new CameraServer("TeleopModule",AL::kVGA,AL::kRGBColorSpace,30,12345,
+                          getParentBroker());
 }
 
 TeleopModule::~TeleopModule()
 {
+    delete cs;
+    qiLogDebug("Teleoperation module destructed");
 }
 
 void TeleopModule::init()
@@ -50,11 +58,10 @@ void TeleopModule::init()
    * Init is called just after construction.
    * Do something or not
    */
-    motionProxy = AL::ALMotionProxy();
-    ttsProxy = AL::ALTextToSpeechProxy();
-    ttsProxy.say("Hello, teleoperation module is initializing");
-
-
+    ttsProxy.say("Teleoperation module initializing");
+    qi::log::setSynchronousLog(true);
+    qi::log::setVerbosity(qi::LogLevel_Debug);
+    qiLogDebug("Teleoperation module initializing");
 }
 
 
@@ -68,7 +75,7 @@ void TeleopModule::startTeleop()
 void TeleopModule::stopTeleop()
 {
 
-    ttsProxy.say("Teleoperation stopped, bye bye");
+    ttsProxy.say("Teleoperation stopped");
 }
 
 void TeleopModule::changeMode(const TeleopMode &newMode)
