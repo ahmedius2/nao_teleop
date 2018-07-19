@@ -35,7 +35,8 @@ void SetPoint::reset()
 
 ColumnVector<5> SetPoint::wd( double pTime, double pSamplingPeriod )
 {
-	ColumnVector<5> wd;
+
+    ColumnVector<5> wd;
 	wd = 
         squareWave_x( pTime ) * trajectory_space.getElement(1),
         squareWave_y( pTime ) * trajectory_space.getElement(2),
@@ -45,7 +46,7 @@ ColumnVector<5> SetPoint::wd( double pTime, double pSamplingPeriod )
 
 	wd = elementProduct( wd, toSI );
 
-	current = linear_interpolator( wd, current, v_lim, pSamplingPeriod );
+    current = linear_interpolator( wd, current, v_lim, pSamplingPeriod );
 
 	return current;
 }

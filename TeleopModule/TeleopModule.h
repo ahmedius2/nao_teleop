@@ -6,6 +6,8 @@
 
 #include <alproxies/altexttospeechproxy.h>
 #include <alproxies/almotionproxy.h>
+#include <alproxies/alrobotpostureproxy.h>
+
 
 #include <boost/thread.hpp>
 #include <boost/atomic.hpp>
@@ -51,7 +53,7 @@ public:
     void stopTeleop();
     // set this on change
     // change teleoperation mode
-    void changeMode(const TeleopMode &newMode);
+    void changeMode(const AL::ALValue &newMode);
     // position = [x, y, z, roll, pitch, yaw]
     // set this periodially on the operator side
     void setOpCoords(const AL::ALValue &coordinates);
@@ -60,12 +62,18 @@ public:
 
 private:
     AL::ALMotionProxy motionProxy;
+    AL::ALRobotPostureProxy robotPostureProxy;
     AL::ALTextToSpeechProxy ttsProxy;
 
-    boost::atomic<TeleopMode> currentMode;
-    float lastOpCoords[6];
-    boost::mutex mtx; // protect lastOpCoords
-
     CameraServer *cs;
+
+    TeleopMode currentMode;
+    boost::atomic<TeleopMode> nextMode;
+    float lastOpCoords[6];
+    boost::mutex mtxOpCoords;
+    boost::thread actionThread;
+
+    void actionThreadFunc();
+
 };
 #endif // TELEOPMODULE_H

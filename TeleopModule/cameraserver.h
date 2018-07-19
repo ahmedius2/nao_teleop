@@ -28,6 +28,8 @@ private:
                                std::size_t);
     void handleAccept(const boost::system::error_code& error);
 
+    void handleDisconnect();
+
     boost::thread io_thread;
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::acceptor connAcceptor;
@@ -35,8 +37,7 @@ private:
     boost::array<char, 1> recv_buffer;
     AL::ALVideoDeviceProxy camProxy;
     std::string clientName;
-
-    AL::ALTextToSpeechProxy ttsProxy; // for debugging
+    int maxFPS;
 };
 
 #endif // CAMERASERVER_H
