@@ -22,7 +22,8 @@ CameraServer::CameraServer(const std::string &gvmName, const int &resolution,
             boost::bind(&CameraServer::handleAccept, this,
               boost::asio::placeholders::error));
 
-    clientName = camProxy.subscribe(gvmName, resolution, colorSpace, maxFPS);
+    clientName = camProxy.subscribeCamera(gvmName,AL::kBottomCamera,
+                                          resolution, colorSpace, maxFPS);
     io_thread = boost::thread(boost::bind(
                       &boost::asio::io_service::run,
                       boost::ref(io_service)));

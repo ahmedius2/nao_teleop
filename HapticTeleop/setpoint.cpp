@@ -5,50 +5,18 @@ template <typename T> int sgn(T val) {
 }
 
 SetPoint::SetPoint()
-{
-	squareWave_x.setFrequency( 0.25 );
-	
-	squareWave_y.setFrequency( 0.25 );
-	squareWave_y.setTimeDelay( 1 );
-
-	squareWave_z.setFrequency( 0.125 );
-	squareWave_z.setTimeDelay( 0.25 );
-
-	squareWave_yaw.setFrequency( 0.5 );
-	squareWave_yaw.setTimeDelay( 0.25 );
-
-	squareWave_roll.setFrequency( 0.5 );
-	squareWave_roll.setTimeDelay( 0.5 );
-
-		
-	wd_0 = 0, 0, 0, 0, 0;	
+{	
 	toSI = 1e-3, 1e-3, 1e-3, M_PI/180, M_PI/180;	
-	v_lim = 50.0 * toSI;
-    current = wd_0;
-    trajectory_space = 30, 30, 30, 20, 20;
+    v_lim_mult = 50.0;
+
 }
 
-void SetPoint::reset()
+ColumnVector<5> SetPoint::find_wd(ColumnVector<5> wd,
+                             ColumnVector<5> w,
+                             double pSamplingPeriod )
 {
-    current = wd_0;
-}
-
-ColumnVector<5> SetPoint::wd( double pTime, double pSamplingPeriod )
-{
-
-    ColumnVector<5> wd;
-	wd = 
-        squareWave_x( pTime ) * trajectory_space.getElement(1),
-        squareWave_y( pTime ) * trajectory_space.getElement(2),
-        squareWave_z( pTime ) * trajectory_space.getElement(3),
-        squareWave_yaw( pTime ) * trajectory_space.getElement(4),
-        squareWave_roll( pTime ) * trajectory_space.getElement(5);
-
-	wd = elementProduct( wd, toSI );
-
-    current = linear_interpolator( wd, current, v_lim, pSamplingPeriod );
-
-	return current;
+    v_lim = v_lim_mult * toSI;
+    return linear_interpolator( wd, w, v_lim, pSamplingPeriod );
 }
 
 ColumnVector<5> SetPoint::linear_interpolator(ColumnVector<5>& final, 
@@ -69,9 +37,11 @@ ColumnVector<5> SetPoint::linear_interpolator(ColumnVector<5>& final,
 	ColumnVector<5> inter;
 	inter = current + elementProduct( temp, step );
 
-	for ( int i = 1; i <= 5; ++i )
-        if( fabs( final(i)-current(i) ) < step(i) )
-			inter(i) = final(i);
+
+    for ( int i = 1; i <= 5; ++i )
+        if( fabs( final(i)-current(i) ) < step(i) ){
+            inter(i) = final(i);
+        }
 
 	return inter;
 }

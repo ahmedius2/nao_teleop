@@ -4,8 +4,8 @@
 
 PositionController::PositionController()
 {
-    stiffness = 500, 500, 500, 1, 1; // original: 500 500 500 1 1
-    damping = 5, 5, 5, 0.1, 0.1; // original 5 5 5 0.1 0.1
+    stiffness = 500, 500, 500, 1,   1; // original: 500 500 500   1   1
+    damping   = 5,  5,  5,  0.1, 0.1;     // original:   5   5   5 0.1 0.1
 }
 
 void PositionController::reset( ColumnVector<5>& pFirstSample, double pPeriod )

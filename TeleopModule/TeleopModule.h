@@ -14,12 +14,6 @@
 
 #include "cameraserver.h"
 
-//namespace AL
-//{
-// This is a forward declaration of AL:ALBroker which
-// avoids including <alcommon/albroker.h> in this header
-//class ALBroker;
-//}
 
 /**
  * This class inherits AL::ALModule. This allows it to bind methods
@@ -33,12 +27,14 @@ public:
 
     virtual ~TeleopModule();
 
+    // multiple modes can be active at the same time
     enum TeleopMode{
-        STOPPED,
-        WALK,
-        HEAD,
-        CARTESIAN_HANDS,
-        CARTESIAN_HANDS_WB // Whole body hands
+        WALK = 1<<0,
+        HEAD = 1<<1,
+        CARTESIAN_LHAND = 1<<2,
+        CARTESIAN_RHAND = 1<<3,
+        CARTESIAN_LLEG = 1<<4,
+        CARTESIAN_RLEG = 1<<5
     };
 
     /**
@@ -51,14 +47,14 @@ public:
     void startTeleop();
     // stop teleoperation
     void stopTeleop();
-    // set this on change
     // change teleoperation mode
-    void changeMode(const AL::ALValue &newMode);
+    void setModes(const AL::ALValue &newModes);
+    void openOrCloseRHand();
+    void openOrCloseLHand();
+    void switchWholeBody();
     // position = [x, y, z, roll, pitch, yaw]
     // set this periodially on the operator side
     void setOpCoords(const AL::ALValue &coordinates);
-    // keyboard inputs
-    void setOpInputsForCurMode(const AL::ALValue &inputs);
 
 private:
     AL::ALMotionProxy motionProxy;
@@ -67,8 +63,8 @@ private:
 
     CameraServer *cs;
 
-    TeleopMode currentMode;
-    boost::atomic<TeleopMode> nextMode;
+    int currentModes;
+    boost::atomic<int> nextModes;
     float lastOpCoords[6];
     boost::mutex mtxOpCoords;
     boost::thread actionThread;

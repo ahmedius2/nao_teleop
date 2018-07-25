@@ -167,8 +167,7 @@ void TeleopModule::actionThreadFunc()
         if(currentModes & WALK){
 
         }
-
-        if(currentModes & HEAD){
+        else if(currentModes & HEAD){
             AL::ALValue targetHeadAngles;
             {
                 boost::lock_guard<boost::mutex> guard(mtxOpCoords);
