@@ -34,10 +34,15 @@ private:
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::acceptor connAcceptor;
     boost::asio::ip::tcp::socket camServerTCPSocket;
-    boost::array<char, 1> recv_buffer;
+    boost::array<int, 2> recv_buffer;
     AL::ALVideoDeviceProxy camProxy;
     std::string clientName;
+    std::string mGvmName;
+    int mColorSpace;
+    int mResolution;
+    const unsigned short mPort;
     int maxFPS;
+    int mBottomOrUp;
 };
 
 #endif // CAMERASERVER_H

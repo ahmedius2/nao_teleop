@@ -22,33 +22,35 @@
 #include <controlbase.h>
 #include <hapticwand.h>
 #include <hapticwand_utils.h>
+#include "hapticlimits.h"
 #include <alvalue/alvalue.h>
 #include <alerror/alerror.h>
 #include <alcommon/alproxy.h>
 #include <alcommon/albroker.h>
 #include <alproxies/altexttospeechproxy.h>
+#include <alproxies/almotionproxy.h>
 #include <boost/swap.hpp>
+#include <Eigen/Eigenvalues>
 #include "setpoint.h"
 #include "positioncontroller.h"
 #include "znm-core_global.h"
+#include "NaoKinematics/NaoRArm_jacob0.h"
+#include "NaoKinematics/naolimits.h"
 
-
-#define NAO_IP_ADDR "10.1.18.16"
+#define NAO_IP_ADDR "169.254.67.213"
 #define ALMOTION_FREQUENCY_HZ 50
+#define MANIP_MODES 8 // Manipulation modes
+#define HAPTIC_AXES 5
+#define HAPTIC_NUM_OF_JOINTS 6
+#define XYZRPY 6
+
 
 using namespace Hardware;
 using namespace std;
 
 // INSEAD OF DEFINING THIS ENUM, INCLUDE TELEOPMODULE.H
-// multiple modes can be active at the same time
-enum TeleopMode{
-    WALK = 1<<0,
-    HEAD = 1<<1,
-    CARTESIAN_LHAND = 1<<2,
-    CARTESIAN_RHAND = 1<<3,
-    CARTESIAN_LLEG = 1<<4,
-    CARTESIAN_RLEG = 1<<5
-};
+enum TeleopMode{ HEAD, LARM, LLEG, RLEG, RARM, BOTH_ARMS, STOP, WALK };
+
 
 class HapticTeleop : public ControlBase
 {
@@ -64,6 +66,7 @@ public:
     
 private:
 
+    // This Thread handles communication with Nao
     class NetworkTask : public TaskXn
     {
     public:
@@ -88,44 +91,16 @@ private:
                     return ht->commQueue.size() > 0 || !runCommTask;
                 });
 
-
                 while(!ht->commQueue.empty()){
                     // call the stored communication function
                     ht->commQueue.front()();
                     ht->commQueue.pop();
                 }
+
             }
 
         }
     };
-
-    // ----- Log Variables -----
-    ColumnVector<5> w;      // current world position.
-    ColumnVector<5> wd;     // desired world position.
-    ColumnVector<5> wd_inter;
-
-    
-    // ----- Control Variables -----
-    double pos_bias,rot_bias;
-    // catch keyboard strokes to change mode or any ohter purpose
-    double headKey; // HEAD mode
-    double cartLHandKey,cartRHandKey; // CARTESIAN_HANDS mode
-    double openCloseLHandKey,openCloseRHandKey; // Open - Close hand
-    double walkKey; // WALK mode
-    double stopKey; // STOP mode
-    double cartRLegKey, cartLLegKey;
-    double wholeBodyKey;
-    
-    // ----- Variables -----
-    HapticWand hapticWand;
-    bool isHapticWandEnabled;
-    SetPoint setPoint;
-    PositionController positionController;
-    int currentModes;
-    ColumnVector<5> firstSample;
-    std::vector<float> opCoords;
-    ColumnVector<5> lastSampleHead, lastSampleRHand,lastSampleLHand,
-            lastSampleBothHands,lastSampleRLeg,lastSampleLLeg;
 
     // this queue stores network calls for communication
     std::queue<std::function<void()>> commQueue;
@@ -133,8 +108,59 @@ private:
     std::condition_variable commCondVar;
     NetworkTask *commTask; // communication thread
 
+    // ----- Log Variables -----
+    ColumnVector<5> w;      // current world position.
+    ColumnVector<5> wd;     // desired world position.
+    ColumnVector<5> wd_inter;
+    double manipEigvals[XYZRPY];
+    
+    // ----- Control Variables -----
+
+    // catch keyboard strokes to change mode or any ohter purpose
+    double headKey; // HEAD mode
+    double cartLHandKey,cartRHandKey; // LARM, RARM, BOTH_ARMS mode
+    double openCloseLHandKey,openCloseRHandKey; // Open - Close hand
+    double walkKey; // WALK mode
+    double stopKey; // STOP mode
+    double cartRLegKey, cartLLegKey; //RLEG LREG mode
+    double wholeBodyKey;
+    
+    // ----- Variables -----
+    double mappingCoefs[MANIP_MODES][HAPTIC_AXES] = {
+        {1, 1, 1, 1.8392, 0.1788},  // HEAD
+        {0.5, 0.5, 0.5, 1.176,  1}, // LARM
+        {1, 1, 1, 1,      1}, // LLEG
+        {1, 1, 1, 1,      1}, // RLEG
+        {0.5, 0.5, 0.5, 1.176,  1}, // RARM
+        {0.5, 0.5, 0.5, 1.176,  1}, // BOTH_ARMS
+        {1, 1, 1, 1,      1}, // STOP
+        {1, 1, 1, 1,      1}  // WALK
+    };
+    double mappingBias[MANIP_MODES][HAPTIC_AXES] = {
+        {0, 0, 0, 0, -0.0651454}, //HEAD
+        {0, 0, 0, 0, 0}, // LARM
+        {0, 0, 0, 0, 0}, // LLEG
+        {0, 0, 0, 0, 0}, // RLEG
+        {0, 0, 0, 0, 0}, // RARM
+        {0, 0, 0, 0, 0}, // BOTH_ARMS
+        {0, 0, 0, 0, 0}, // STOP
+        {0, 0, 0, 0, 0}  // WALK
+    };
+
+    const char *naoChainNames[NAO_NUM_OF_CHAINS] =
+                            { "Head", "LArm", "LLeg", "RLeg","RArm" };
+    std::vector<float> naoAngles[NAO_NUM_OF_CHAINS];
+
     boost::shared_ptr<AL::ALBroker> broker;
     boost::shared_ptr<AL::ALProxy>  teleopProxy;
+    boost::shared_ptr<AL::ALMotionProxy> motionProxy;
+
+    bool isHapticWandEnabled;
+    HapticWand hapticWand;
+    SetPoint setPoint;
+    PositionController positionController;
+    TeleopMode currentMode;
+    ColumnVector<5> lastSamples[MANIP_MODES];
 };
 
 /**
@@ -149,15 +175,31 @@ int HapticTeleop::initialize()
     broker = AL::ALBroker::createBroker("MyBroker", "", 0, NAO_IP_ADDR, 9559);
 
     teleopProxy = boost::shared_ptr<AL::ALProxy>(
-                    new AL::ALProxy(broker, "TeleopModule")
-                  );
+                new AL::ALProxy(broker, "TeleopModule")
+                );
 
-    registerLogVariable( w.getElementsPointer(), "w", 1, 5 );
-    registerLogVariable( wd.getElementsPointer(), "wd", 1, 5 );
-    registerLogVariable( wd_inter.getElementsPointer(), "wd_inter", 1, 5 );
+    motionProxy = boost::shared_ptr<AL::ALMotionProxy>(
+                new AL::ALMotionProxy(broker)
+                );
 
-    registerControlVariable( &pos_bias, "Position Bias", 1, 1);
-    registerControlVariable( &rot_bias, "Rotation Bias", 1, 1);
+    if(motionProxy.get() == 0){
+        logFile << "motionProxy is nullptr!" << std::endl;
+        logFile.flush();
+    }
+
+    naoAngles[HEAD] = std::vector<float>(NAO_NUM_OF_HEAD_JOINTS, 0);
+    naoAngles[LARM] = std::vector<float>(NAO_NUM_OF_ARM_JOINTS,  0);
+    naoAngles[LLEG] = std::vector<float>(NAO_NUM_OF_LEG_JOINTS,  0);
+    naoAngles[RLEG] = std::vector<float>(NAO_NUM_OF_LEG_JOINTS,  0);
+    naoAngles[RARM] = std::vector<float>(NAO_NUM_OF_ARM_JOINTS,  0);
+
+    registerLogVariable( w.getElementsPointer(), "w", 1, HAPTIC_AXES );
+    registerLogVariable( wd.getElementsPointer(), "wd", 1, HAPTIC_AXES );
+    registerLogVariable( wd_inter.getElementsPointer(), "wd_inter",
+                         1, HAPTIC_AXES );
+    registerLogVariable( manipEigvals, "manipEigvals",1, XYZRPY );
+
+    registerControlVariable( mappingCoefs[LARM], "mappingCoefs[LARM]",1,HAPTIC_AXES);
     registerControlVariable( &setPoint.v_lim_mult, "v_lim_mult",1,1);
     registerControlVariable( &openCloseLHandKey, "key_q", 1, 1);
     registerControlVariable( &headKey, "key_w", 1, 1);
@@ -170,20 +212,19 @@ int HapticTeleop::initialize()
     registerControlVariable( &cartRLegKey, "key_c", 1, 1);
     registerControlVariable( &wholeBodyKey, "key_f", 1, 1);
     registerControlVariable( positionController.stiffness.getElementsPointer(),
-                             "stiffness", 1, 5);
+                             "stiffness", 1, HAPTIC_AXES);
     registerControlVariable( positionController.damping.getElementsPointer(),
-                             "damping", 1, 5);
+                             "damping", 1, HAPTIC_AXES);
 
-    pos_bias = 0.5;
-    rot_bias = 0.5;
     openCloseLHandKey = headKey = openCloseRHandKey = cartLHandKey = walkKey =0;
     cartRHandKey = cartLLegKey = stopKey = cartRLegKey = wholeBodyKey = 0;
 
-    hapticWand.openDevice();              // Open the q8 card
+    hapticWand.openDevice();        // Open the q8 card
     hapticWand.calibrateWand();     // Calibrate the haptic wand
 
     commTask = new NetworkTask(this);
     commTask->runTask();
+
     return 0;
 }
 
@@ -201,11 +242,16 @@ int HapticTeleop::start()
         return -1;
     }
 
-    teleopProxy->callVoid("startTeleop");
-
     hapticWand.enableWand();
     isHapticWandEnabled = true;
 
+    wd = 0,0,0,0,0;
+    wd.setElement(2, HAPTIC_START_YPOS);
+    wd_inter = wd;
+    for(int i=0; i<MANIP_MODES; ++i)
+        lastSamples[i]= wd;
+
+    ColumnVector<5> firstSample;
     firstSample =
             hapticWand.firstSample()[0],
             hapticWand.firstSample()[1],
@@ -213,18 +259,10 @@ int HapticTeleop::start()
             hapticWand.firstSample()[3],
             hapticWand.firstSample()[4];
 
-    lastSampleBothHands = 0,0.2,0,0,0;
-    lastSampleLHand = 0,0.2,0,0,0;
-    lastSampleRHand = 0,0.2,0,0,0;
-    lastSampleRLeg = 0,0.2,0,0,0;
-    lastSampleLLeg = 0,0.2,0,0,0;
-    lastSampleHead = 0,0.2,0,0,0;
-    wd_inter =  0,0.2,0,0,0;
-    wd = 0,0.2,0,0,0;
-
     positionController.reset( firstSample, period() );
 
-    teleopProxy->callVoid("setModes",AL::ALValue(currentModes = 0));
+    teleopProxy->callVoid("startTeleop");
+    teleopProxy->callVoid("setMode",AL::ALValue(currentMode = STOP));
 
     return 0;
 }
@@ -248,7 +286,7 @@ int HapticTeleop::start()
  */
 int HapticTeleop::doloop()
 {
-    double jointAngles[6];        // joint angles in radians
+    double jointAngles[HAPTIC_NUM_OF_JOINTS]; // joint angles in radians
     hapticWand.jointAngles( jointAngles );
     // current world position.
     hapticWand.forwardKinematics( jointAngles, w.getElementsPointer() );
@@ -259,123 +297,123 @@ int HapticTeleop::doloop()
     if(isButtonPushed && hapticWand.readDigital(4)){
         wd = wd_inter = w;
     }
-
     isButtonPushed = !hapticWand.readDigital(4);
 
     static unsigned robotMotionFreqCounter = 0;
-    if(++robotMotionFreqCounter == frequency() / ALMOTION_FREQUENCY_HZ){
-
+    if(++robotMotionFreqCounter == (frequency() / ALMOTION_FREQUENCY_HZ)){
+        // 50 HZ, 20ms period
         // to reach nao, we need to call methods from teleop proxy
         // but these methods involves network communication and may block caller
         // so to do this we made a queue of functions and pushed functions in it
         // and the communication thread popped and called them
         if(commDataMutex.try_lock()){
-            // don't let it to switch whole body while in another mode
-            if(!currentModes && wholeBodyKey){
-                commQueue.push([this](){
-                    teleopProxy->callVoid("switchWholeBody");
-                });
-                std::cout << "switchWholeBody" << std::endl;
+            static unsigned buttonFreqCounter = 0;
+            if(++buttonFreqCounter == 2){ // 40 ms period
+                // don't let it to switch whole body while in another mode
+                if(!currentMode && wholeBodyKey){
+                    commQueue.push([this](){
+                        teleopProxy->callVoid("switchWholeBody");
+                    });
+                    std::cout << "switchWholeBody" << std::endl;
+                }
+
+                if(openCloseRHandKey){
+                    commQueue.push([this](){
+                        teleopProxy->callVoid("openOrCloseRHand");
+                    });
+                    std::cout << "openCloseRHand" << std::endl;
+                }
+
+                if(openCloseLHandKey){
+                    commQueue.push([this](){
+                        teleopProxy->callVoid("openOrCloseLHand");
+                    });
+                    std::cout << "openCloseLHand" << std::endl;
+                }
+                buttonFreqCounter = 0;
             }
 
-            if(openCloseRHandKey)
-                commQueue.push([this](){
-                    teleopProxy->callVoid("openOrCloseRHand");
-                });
-
-            if(openCloseLHandKey)
-                commQueue.push([this](){
-                    teleopProxy->callVoid("openOrCloseLHand");
-                });
-
             // mode change
-            int newModes=0;
-            newModes |= walkKey ? WALK : 0;
-            newModes |= (!newModes && headKey) ? HEAD : 0;
-            newModes |= (!newModes && cartRHandKey) ? CARTESIAN_RHAND : 0;
-            newModes |= (!newModes && cartLHandKey) ? CARTESIAN_LHAND : 0;
-            newModes |= (!newModes && cartRLegKey)  ? CARTESIAN_RLEG  : 0;
-            newModes |= (!newModes && cartLLegKey)  ? CARTESIAN_LLEG  : 0;
-            // The combinations can be:
-            // Only head, Only left hand, only right hand, both hands,
-            // only left leg, and only right leg
+            TeleopMode newMode = STOP;
+            if(headKey) newMode = HEAD;
+            else if(walkKey) newMode = WALK;
+            else if(cartRLegKey) newMode = RLEG;
+            else if(cartLLegKey) newMode = LLEG;
+            else if(cartLHandKey && cartRHandKey) newMode = BOTH_ARMS;
+            else if(cartLHandKey) newMode = LARM;
+            else if(cartRHandKey) newMode = RARM;
             // save the current w, when we switch to same mode back,
             // we will use it
 
             // mode switching can only be done while button is released
-            if(!isButtonPushed && currentModes != newModes){
-                switch(currentModes){// clear head bit
-                case HEAD:
-                    lastSampleHead = w;
-                    break;
-                case CARTESIAN_RHAND | CARTESIAN_LHAND:
-                    lastSampleBothHands = w;
-                    break;
-                case CARTESIAN_RHAND:
-                    lastSampleRHand = w;
-                    break;
-                case CARTESIAN_LHAND:
-                    lastSampleLHand = w;
-                    break;
-                case CARTESIAN_RLEG:
-                    lastSampleRLeg = w;
-                    break;
-                case CARTESIAN_LLEG:
-                    lastSampleLLeg = w;
-                    break;
-                }
+            if(!isButtonPushed && currentMode != newMode){
+                lastSamples[currentMode] = w;
                 wd_inter = w;
-                currentModes = newModes;
+                currentMode = newMode;
                 commQueue.push([this](){
                     // make the mode switch delayed so the haptic wand can have
                     // some time before returning its last position of
                     // selected mode
                     // don't worry, queue will be locked by commThread while
                     // this thread is sleeping so doloop cannot overflow it
-                    // with setOpCoords calls
+                    // with other calls. But the keys won't work while on mode switch
                     std::this_thread::sleep_for(std::chrono::seconds(2));
-                    teleopProxy->callVoid("setModes",AL::ALValue(currentModes));
+                    teleopProxy->callVoid("setMode",AL::ALValue(currentMode));
                 });
-                switch(newModes){
-                case HEAD:
-                    wd = lastSampleHead;
-                    break;
-                case WALK:
-                    wd = 0,0.2,0,0,0;
-                case CARTESIAN_RHAND | CARTESIAN_LHAND:
-                    wd = lastSampleBothHands;
-                    break;
-                case CARTESIAN_RHAND:
-                    wd = lastSampleRHand;
-                    break;
-                case CARTESIAN_LHAND:
-                    wd = lastSampleLHand;
-                    break;
-                case CARTESIAN_RLEG:
-                    wd = lastSampleRLeg;
-                    break;
-                case CARTESIAN_LLEG:
-                    wd = lastSampleLLeg;
-                    break;
-                default:
-                    break;
-                }
-
+                wd = lastSamples[newMode];
             }
-            // Op X is Nao Y, Op Y is Nao X
-            // 0.25 comes from haptic device default position
-            opCoords = {(float)(w(2)*pos_bias), (float)(w(1)*pos_bias),
-                        (float)(w(3)*pos_bias), (float)(w(4)*rot_bias),
-                        (float)(w(5)*rot_bias), 0.0f};
-            // The bias can be different for 4 and 5, as they are for head
 
-            // push the function call to queue
-            commQueue.push([this](){
-                teleopProxy->callVoid("setOpCoords", AL::ALValue(opCoords));
-            });
+
+            static unsigned posCtrlFreqCounter = 0;
+            if(++posCtrlFreqCounter == 50){ // 500 ms period
+                // Op X is Nao Y, Op Y is Nao X
+                // 0.125 is due to haptic placement, it should be different for
+                // walking, like 0.2 static because we need it after the scope ends
+                // as commThread will send it
+                static std::vector<float> opCoords(6);
+                opCoords[0] = (float)((HAPTIC_MAX_Y-w(2))*
+                    mappingCoefs[currentMode][1] + mappingBias[currentMode][1]);
+                opCoords[1] = (float)(w(1)*mappingCoefs[currentMode][0]+
+                    mappingBias[currentMode][0]);
+                opCoords[2] = (float)(w(3)*mappingCoefs[currentMode][2]+
+                    mappingBias[currentMode][2]);
+                opCoords[3] = (float)(w(5)*mappingCoefs[currentMode][4]+
+                    mappingBias[currentMode][4]);
+                opCoords[4] = (float)(w(4)*mappingCoefs[currentMode][3]+
+                    mappingBias[currentMode][3]),
+                opCoords[5] = 0.0f;
+
+                // push the function call to queue
+                commQueue.push([this](){
+                    teleopProxy->callVoid("setOpCoords", AL::ALValue(opCoords));
+
+                    if(currentMode == BOTH_ARMS){
+                        naoAngles[LARM] =
+                            motionProxy->getAngles(naoChainNames[LARM],false);
+                        naoAngles[RARM] =
+                            motionProxy->getAngles(naoChainNames[RARM],false);
+                    }
+                    else if (currentMode != STOP && currentMode != WALK)
+                        naoAngles[currentMode] = motionProxy->getAngles(
+                                    naoChainNames[currentMode],false);
+
+                });
+                posCtrlFreqCounter = 0;
+            }
 
             commDataMutex.unlock();
             commCondVar.notify_one();
+
+            if(currentMode == RARM){
+                static Eigen::Matrix<double,XYZRPY,NAO_NUM_OF_ARM_JOINTS>J_RArm;
+                static Eigen::Matrix<double,XYZRPY,XYZRPY>JTimesJTranspose;
+                NaoRArm_jacob0(J_RArm, naoAngles[RARM]);
+                JTimesJTranspose = J_RArm * J_RArm.transpose();
+                Eigen::VectorXcd eivals = JTimesJTranspose.eigenvalues();
+                for(int i=0; i<XYZRPY; ++i)
+                    manipEigvals[i] = real(eivals(i));
+            }
+
             robotMotionFreqCounter = 0;
         }
         else{

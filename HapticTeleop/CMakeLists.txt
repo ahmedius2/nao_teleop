@@ -21,8 +21,10 @@ set(_srcs
     positioncontroller.cpp
     setpoint.h
     setpoint.cpp
-    squarewavegenerator.h
-    squarewavegenerator.cpp
+    hapticlimits.h
+    NaoKinematics/naolimits.h
+    NaoKinematics/NaoRArm_jacob0.h
+    NaoKinematics/NaoRArm_jacob0.cpp
     main.cpp)
 
 # Create a executable named HapticTeleop

@@ -11,8 +11,9 @@ TeleopModule::TeleopModule(boost::shared_ptr<AL::ALBroker> broker,
     : AL::ALModule(broker, name),
       motionProxy(getParentBroker()),
       ttsProxy(getParentBroker()),
-      currentModes(0),
-      nextModes(0)
+      currentMode(STOP),
+      nextMode(STOP),
+      wholeBodySwitch(false)
 {
     lastOpCoords[0] = 0; lastOpCoords[1] = 0; lastOpCoords[2] = 0;
     lastOpCoords[3] = 0; lastOpCoords[4] = 0; lastOpCoords[5] = 0;
@@ -26,9 +27,9 @@ TeleopModule::TeleopModule(boost::shared_ptr<AL::ALBroker> broker,
     functionName("stopTeleop", getName(), "Stops the teleoperation");
     BIND_METHOD(TeleopModule::stopTeleop);
 
-    functionName("setModes", getName(), "Sets teleoperation modes.");
-    addParam("newModes", "Selected modes, stored in a single int by ORing");
-    BIND_METHOD(TeleopModule::setModes);
+    functionName("setMode", getName(), "Sets teleoperation mode.");
+    addParam("newModes", "Selected mode");
+    BIND_METHOD(TeleopModule::setMode);
 
     functionName("openOrCloseRHand", getName(), "Changes right hand state.");
     BIND_METHOD(TeleopModule::openOrCloseRHand);
@@ -76,8 +77,10 @@ void TeleopModule::init()
 void TeleopModule::startTeleop()
 {
     ttsProxy.say("Starting teleoperation");
+    awareness.stopAwareness();
     if(!actionThread.joinable())
         actionThread = boost::thread(&TeleopModule::actionThreadFunc, this);
+
 
 }
 
@@ -89,12 +92,13 @@ void TeleopModule::stopTeleop()
     }
     motionProxy.wbEnable(false);
     motionProxy.rest();
+    awareness.startAwareness();
     ttsProxy.say("Teleoperation stopped");
 }
 
-void TeleopModule::setModes(const AL::ALValue &newModes)
+void TeleopModule::setMode(const AL::ALValue &newMode)
 {
-    nextModes = (int)newModes;
+    nextMode = (TeleopMode)(int)newMode;
 }
 
 void TeleopModule::openOrCloseRHand()
@@ -119,16 +123,7 @@ void TeleopModule::openOrCloseLHand()
 
 void TeleopModule::switchWholeBody()
 {
-    static bool use=true;
-    if(use){
-        motionProxy.wbEnable(true);
-        motionProxy.wbFootState("Plane", "Legs");
-        motionProxy.wbEnableBalanceConstraint(false, "Legs");
-    }
-    else{
-        motionProxy.wbEnable(false);
-    }
-    use = !use;
+    wholeBodySwitch = true;
 }
 
 // The caller should not call this function faster than 50 Hz
@@ -136,8 +131,12 @@ void TeleopModule::switchWholeBody()
 void TeleopModule::setOpCoords(const AL::ALValue &coordinates)
 {
     boost::lock_guard<boost::mutex> guard(mtxOpCoords);
-    for(int i=0; i<6; ++i)
+    std::cout << "setOpCoords, lastOpCoords: ";
+    for(int i=0; i<6; ++i){
         lastOpCoords[i] = coordinates[i];
+        std::cout << lastOpCoords[i] << " ";
+    }
+    std::cout << std::endl;
 }
 
 // We can give real-time priority to this thread
@@ -145,98 +144,140 @@ void TeleopModule::setOpCoords(const AL::ALValue &coordinates)
 void TeleopModule::actionThreadFunc()
 {
     motionProxy.wakeUp();
+    // make sure joints is stiff enough to move
+    motionProxy.stiffnessInterpolation("Head", 1.0f, 0.5f);
+    motionProxy.stiffnessInterpolation("RArm", 1.0f, 0.5f);
+    motionProxy.stiffnessInterpolation("LArm", 1.0f, 0.5f);
+
     robotPostureProxy.goToPosture("StandInit", 0.5f);
-    const int FRAME_ROBOT = 2, POSITION_AND_ROTATION = 31; // don't control wz
+    const int FRAME_ROBOT = 2, POSITION = 7;
     const std::vector<float> initPosRArm =
-                    motionProxy.getPosition("RArm", FRAME_ROBOT, false);
+            motionProxy.getPosition("RArm", FRAME_ROBOT, false);
     const std::vector<float> initPosLArm =
-                    motionProxy.getPosition("LArm", FRAME_ROBOT, false);
+            motionProxy.getPosition("LArm", FRAME_ROBOT, false);
+    std::vector<float> targetPosLArm, targetPosRArm;
+    std::vector<std::string> effectorNames;
+    AL::ALValue armsPathList;
+    AL::ALValue timesList;
 
     while(true){
+        effectorNames.clear();
+        armsPathList.clear();
+        timesList.clear();
 
-        if(currentModes != nextModes){
-            currentModes = nextModes;
-            std::cout << "Mode switched to:" << currentModes << std::endl;
+        if(currentMode != nextMode){
+            currentMode = nextMode;
+            std::cout << "Mode switched to:" << currentMode << std::endl;
+        }
+
+        static bool  useWholeBody = false;
+        if(wholeBodySwitch){
+            useWholeBody=!useWholeBody;
+            if(useWholeBody){
+                motionProxy.wbEnable(true);
+                motionProxy.wbFootState("Plane", "Legs"); // can be also Plane Legs
+                motionProxy.wbEnableBalanceConstraint(false, "Legs");
+            }
+            else{
+                motionProxy.wbEnable(false);
+            }
+            wholeBodySwitch = false;
         }
 
         // for the problem of watching hands while hand teloperation
         // involves controlling head movements. To solve this problem,
         // the pitch and roll of operator will be used to control
         // head pitch and yaw.
+        // BETTER SOLUTION, USE BOTTOM CAMERA !
 
-        if(currentModes & WALK){
+        if(currentMode == HEAD){
+            std::vector<std::string> effectorNames;
+            effectorNames.push_back("HeadPitch"); // -0.330041 to 0.200015
+            effectorNames.push_back("HeadYaw"); // -2.0857 to 2.0857
 
-        }
-
-        if(currentModes & HEAD){
             AL::ALValue targetHeadAngles;
             {
                 boost::lock_guard<boost::mutex> guard(mtxOpCoords);
                 // The variables define head angles
                 targetHeadAngles = AL::ALValue::array(
-                           lastOpCoords[3],  // Pitch
-                           lastOpCoords[4]); // Yaw
+                        lastOpCoords[4],  // Pitch
+                        lastOpCoords[3]); // Yaw (haptic roll)
             }
+            std::cout << "targetHeadAngles[0]:"
+                      << targetHeadAngles[0] << "\t\tlastOpCoords[4]:"
+                      << lastOpCoords[4] << std::endl;
+            std::cout << "targetHeadAngles[1]:"
+                      << targetHeadAngles[1] << "\t\tlastOpCoords[3]:"
+                      << lastOpCoords[3] << std::endl << std::endl;
 
-            std::vector<std::string> effectorNames;
-            effectorNames.push_back("HeadPitch");
-            effectorNames.push_back("HeadYaw");
+            timesList = AL::ALValue::array( 0.5f, 0.5f);
 
-             motionProxy.angleInterpolationWithSpeed(effectorNames,
-                                targetHeadAngles, 0.3f);
+            if(motionProxy.areResourcesAvailable(effectorNames))
+                motionProxy.angleInterpolation(effectorNames,targetHeadAngles,
+                                           timesList,true);
         }
-        else if(currentModes & (CARTESIAN_RHAND | CARTESIAN_LHAND)){
-            std::vector<float> targetPosRArm(initPosRArm),
-                    targetPosLArm(initPosLArm);
+        else if(currentMode == LLEG){
+
+        }
+        else if(currentMode == RLEG){
+
+        }
+        else if(currentMode == WALK){
+
+        }
+        else if(currentMode == LARM || currentMode == RARM ||
+                currentMode == BOTH_ARMS)
+        {
+            targetPosLArm = std::vector<float>(initPosLArm);
+            targetPosRArm = std::vector<float>(initPosRArm);
             {
                 boost::lock_guard<boost::mutex> guard(mtxOpCoords);
-                // the vector includes 12 variables which defines
-                // a transformation matrix that defines effector
-                // position and orientation
-                // tf[0] tf[1] tf[2] tf[3](x)
-                // tf[0] tf[1] tf[2] tf[7](y)
-                // tf[0] tf[1] tf[2] tf[11](z)
-                //   0     0     0      1
-                for(int i=0; i<6; ++i){
-                    targetPosRArm[i] += lastOpCoords[i];
+                for(int i=0; i<5; ++i){
+                    std::cout << "targetPosLArm[" << i <<"]: " << targetPosLArm[i];
                     targetPosLArm[i] += lastOpCoords[i];
+                    targetPosRArm[i] += lastOpCoords[i];
+                    std::cout << " -> " << targetPosLArm[i] << std::endl;
                 }
+                std::cout << std::endl;
             }
 
-            std::vector<std::string> effectorNames;
-            AL::ALValue armsPathList;
-            AL::ALValue timesList;
-            if(currentModes & CARTESIAN_RHAND){
-                armsPathList.arrayPush(targetPosRArm);
-                timesList.arrayPush(0.3f);
-                effectorNames.push_back("RArm");
-            }
-            if(currentModes & CARTESIAN_LHAND){
+
+
+            if(currentMode == LARM || currentMode == BOTH_ARMS){
                 armsPathList.arrayPush(targetPosLArm);
-                timesList.arrayPush(0.3f);
+                timesList.arrayPush(1.0f);
                 effectorNames.push_back("LArm");
             }
+            if(currentMode == RARM || currentMode == BOTH_ARMS){
+                armsPathList.arrayPush(targetPosRArm);
+                timesList.arrayPush(1.0f);
+                effectorNames.push_back("RArm");
+            }
 
-            // blocking call
-            motionProxy.positionInterpolations(effectorNames, FRAME_ROBOT,
-                                armsPathList,POSITION_AND_ROTATION, timesList );
-        }
-        else if(currentModes & CARTESIAN_LLEG){
+            if(motionProxy.areResourcesAvailable(effectorNames))
+                motionProxy.positionInterpolations(effectorNames, FRAME_ROBOT,
+                                            armsPathList,4, timesList );
 
-        }
-        else if(currentModes & CARTESIAN_RLEG){
+
+            // [RL]WristYaw range: -1.8238 to 1.8238 radians
+            /*if(currentMode == RARM)
+                motionProxy.angleInterpolationWithSpeed(
+                            "RWristYaw",targetPosRArm[3],0.4f);
+            else if(currentMode == LARM)
+                motionProxy.angleInterpolationWithSpeed(
+                            "LWristYaw",-targetPosLArm[3],0.4f);*/
 
         }
         // this sleep is also an interruption point.
         // the sleeping time is 20 ms because ALMotion runs in
         // 50 Hz and we don't need to be faster than that
-        // THAT SLEEPING TIME IS NOT ENOUGH FOR SETTRANSFORMS SO WE NEED TO SLEEP
-        // SOMETHING LIKE 400 MS
-        // OR DO NOT USE SETTRANSFORMS AND USE BLOCKING CALL, transformInterpolations
-        // so this way we won't need a sleep
         //boost::this_thread::sleep_for(boost::chrono::milliseconds(50));
-        if(currentModes == 0) // no mode is active, sleep
-            boost::this_thread::sleep_for(boost::chrono::milliseconds(50));
-    }
+        // THAT SLEEPING TIME IS NOT ENOUGH FOR SETTRANSFORMS
+        // SO WE NEED TO SLEEP
+        // SOMETHING LIKE 400 MS
+        // OR DO NOT USE SETTRANSFORMS AND USE BLOCKING CALL,
+        // transformInterpolations so this way we won't need a sleep
+        boost::this_thread::interruption_point();
+    } // while(true)
 
 }

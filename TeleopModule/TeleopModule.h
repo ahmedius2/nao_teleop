@@ -7,6 +7,7 @@
 #include <alproxies/altexttospeechproxy.h>
 #include <alproxies/almotionproxy.h>
 #include <alproxies/alrobotpostureproxy.h>
+#include <alproxies/albasicawarenessproxy.h>
 
 
 #include <boost/thread.hpp>
@@ -27,15 +28,17 @@ public:
 
     virtual ~TeleopModule();
 
-    // multiple modes can be active at the same time
     enum TeleopMode{
-        WALK = 1<<0,
-        HEAD = 1<<1,
-        CARTESIAN_LHAND = 1<<2,
-        CARTESIAN_RHAND = 1<<3,
-        CARTESIAN_LLEG = 1<<4,
-        CARTESIAN_RLEG = 1<<5
+        HEAD,
+        LARM,
+        LLEG,
+        RLEG,
+        RARM,
+        BOTH_ARMS,
+        WALK,
+        STOP
     };
+
 
     /**
    * Overloading ALModule::init().
@@ -48,7 +51,7 @@ public:
     // stop teleoperation
     void stopTeleop();
     // change teleoperation mode
-    void setModes(const AL::ALValue &newModes);
+    void setMode(const AL::ALValue &newMode);
     void openOrCloseRHand();
     void openOrCloseLHand();
     void switchWholeBody();
@@ -60,11 +63,13 @@ private:
     AL::ALMotionProxy motionProxy;
     AL::ALRobotPostureProxy robotPostureProxy;
     AL::ALTextToSpeechProxy ttsProxy;
+    AL::ALBasicAwarenessProxy awareness;
 
     CameraServer *cs;
 
-    int currentModes;
-    boost::atomic<int> nextModes;
+    TeleopMode currentMode;
+    boost::atomic<TeleopMode> nextMode;
+    boost::atomic<bool> wholeBodySwitch;
     float lastOpCoords[6];
     boost::mutex mtxOpCoords;
     boost::thread actionThread;

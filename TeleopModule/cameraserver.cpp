@@ -16,7 +16,12 @@ CameraServer::CameraServer(const std::string &gvmName, const int &resolution,
     : connAcceptor(io_service, tcp::endpoint(tcp::v4(),port)),
       camServerTCPSocket(io_service),
       camProxy(parentBroker),
-      maxFPS(maxfps)
+      mGvmName(gvmName),
+      mColorSpace(colorSpace),
+      mPort(port),
+      maxFPS(maxfps),
+      mResolution(resolution),
+      mBottomOrUp(1)
 {
     connAcceptor.async_accept(camServerTCPSocket,
             boost::bind(&CameraServer::handleAccept, this,
@@ -49,6 +54,8 @@ void CameraServer::replyCamFrameRequest(const boost::system::error_code& error,
         return;
     }
 
+    boost::chrono::steady_clock::time_point tstart
+            = boost::chrono::steady_clock::now();
     boost::array<char,12> datagram;
 #ifdef TELEOPMODULE_IS_REMOTE
     const AL::ALValue imageVal = camProxy.getImageRemote(clientName);
@@ -83,13 +90,34 @@ void CameraServer::replyCamFrameRequest(const boost::system::error_code& error,
     }
 
     camProxy.releaseImage(clientName);
+    boost::chrono::steady_clock::time_point tend =
+            boost::chrono::steady_clock::now();
+    boost::chrono::milliseconds elapsedMs =
+         boost::chrono::duration_cast<boost::chrono::milliseconds>(tend-tstart);
 
-    boost::this_thread::sleep_for(boost::chrono::milliseconds(1000 / maxFPS));
+    std::cout << "get and send image took " << elapsedMs.count()
+              << " ms" << std::endl;
+    boost::this_thread::sleep_for(
+                boost::chrono::milliseconds(1000 / maxFPS + 1) - elapsedMs);
 
     camServerTCPSocket.async_read_some(boost::asio::buffer(recv_buffer),
             boost::bind(&CameraServer::replyCamFrameRequest, this,
               boost::asio::placeholders::error,
               boost::asio::placeholders::bytes_transferred));
+    std::cout<<"Buffer "<<recv_buffer[0]<<recv_buffer[1]<<std::endl;
+
+    if(mResolution!=recv_buffer[0] || mBottomOrUp != recv_buffer[1]){
+        mResolution=recv_buffer[0];
+        mBottomOrUp = recv_buffer[1];
+        camProxy.unsubscribe(clientName);
+        clientName = camProxy.subscribeCamera(mGvmName,mBottomOrUp,mResolution,
+                                              mColorSpace, maxFPS);
+
+    }
+
+
+
+
 }
 
 void CameraServer::handleDisconnect(){

@@ -1,7 +1,6 @@
 #ifndef SETPOINT_H
 #define SETPOINT_H
 
-#include "squarewavegenerator.h"
 #include "ColumnVector.hpp"
 
 
@@ -26,4 +25,4 @@ private:
 	ColumnVector<5> v_lim;
 };
 
-#endif // SQUAREWAVEGENERATOR_H
+#endif //
