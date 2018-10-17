@@ -1,6 +1,5 @@
 LogFile is started
 initializeControlBase()
-void ControlBase::initializeControlBase() dumpState : 0
 End Of void ControlBase::initializeControlBase()
 void ControlBase::startControlBase()
 unbinded from log variable heap

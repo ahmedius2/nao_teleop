@@ -8,13 +8,18 @@
 #include <alproxies/almotionproxy.h>
 #include <alproxies/alrobotpostureproxy.h>
 #include <alproxies/albasicawarenessproxy.h>
+#include <alproxies/almemoryproxy.h>
 
+#include <almath/tools/almath.h>
+#include <almath/tools/altransformhelpers.h>
 
 #include <boost/thread.hpp>
 #include <boost/atomic.hpp>
 
 #include "cameraserver.h"
 
+#define FRAME_TORSO 1
+#define CONTROL_AXES 63
 
 /**
  * This class inherits AL::ALModule. This allows it to bind methods
@@ -31,11 +36,10 @@ public:
     enum TeleopMode{
         HEAD,
         LARM,
-        LLEG,
-        RLEG,
         RARM,
         BOTH_ARMS,
-        WALK,
+        WALK_TO,
+        WALK_TOWARD,
         STOP
     };
 
@@ -46,35 +50,9 @@ public:
    */
     virtual void init();
 
-    // start teleoperation
-    void startTeleop();
-    // stop teleoperation
-    void stopTeleop();
-    // change teleoperation mode
-    void setMode(const AL::ALValue &newMode);
-    void openOrCloseRHand();
-    void openOrCloseLHand();
-    void switchWholeBody();
-    // position = [x, y, z, roll, pitch, yaw]
-    // set this periodially on the operator side
-    void setOpCoords(const AL::ALValue &coordinates);
 
 private:
-    AL::ALMotionProxy motionProxy;
-    AL::ALRobotPostureProxy robotPostureProxy;
-    AL::ALTextToSpeechProxy ttsProxy;
-    AL::ALBasicAwarenessProxy awareness;
-
     CameraServer *cs;
-
-    TeleopMode currentMode;
-    boost::atomic<TeleopMode> nextMode;
-    boost::atomic<bool> wholeBodySwitch;
-    float lastOpCoords[6];
-    boost::mutex mtxOpCoords;
-    boost::thread actionThread;
-
-    void actionThreadFunc();
 
 };
 #endif // TELEOPMODULE_H

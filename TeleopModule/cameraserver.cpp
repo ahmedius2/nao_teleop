@@ -75,7 +75,7 @@ void CameraServer::replyCamFrameRequest(const boost::system::error_code& error,
         if (ret < 12)
             qiLogDebug("Camera socket error 12");
         ret = boost::asio::write(camServerTCPSocket,
-                   boost::asio::buffer(image->getData(),image->getAllocatedSize()));
+               boost::asio::buffer(image->getData(),image->getAllocatedSize()));
         if (ret < image->getAllocatedSize())
             qiLogDebug("Camera socket error image data");
     }
@@ -95,8 +95,8 @@ void CameraServer::replyCamFrameRequest(const boost::system::error_code& error,
     boost::chrono::milliseconds elapsedMs =
          boost::chrono::duration_cast<boost::chrono::milliseconds>(tend-tstart);
 
-    std::cout << "get and send image took " << elapsedMs.count()
-              << " ms" << std::endl;
+    //std::cout << "get and send image took " << elapsedMs.count()
+    //          << " ms" << std::endl;
     boost::this_thread::sleep_for(
                 boost::chrono::milliseconds(1000 / maxFPS + 1) - elapsedMs);
 
@@ -104,7 +104,7 @@ void CameraServer::replyCamFrameRequest(const boost::system::error_code& error,
             boost::bind(&CameraServer::replyCamFrameRequest, this,
               boost::asio::placeholders::error,
               boost::asio::placeholders::bytes_transferred));
-    std::cout<<"Buffer "<<recv_buffer[0]<<recv_buffer[1]<<std::endl;
+    //std::cout<<"Buffer "<<recv_buffer[0]<<recv_buffer[1]<<std::endl;
 
     if(mResolution!=recv_buffer[0] || mBottomOrUp != recv_buffer[1]){
         mResolution=recv_buffer[0];
@@ -112,11 +112,7 @@ void CameraServer::replyCamFrameRequest(const boost::system::error_code& error,
         camProxy.unsubscribe(clientName);
         clientName = camProxy.subscribeCamera(mGvmName,mBottomOrUp,mResolution,
                                               mColorSpace, maxFPS);
-
     }
-
-
-
 
 }
 

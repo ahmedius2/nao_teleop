@@ -23,12 +23,12 @@ set(_srcs
     setpoint.cpp
     hapticlimits.h
     NaoKinematics/naolimits.h
-    NaoKinematics/NaoRArm_jacob0.h
-    NaoKinematics/NaoRArm_jacob0.cpp
+    HapticTeleop.cpp
+    HapticTeleop.h
     main.cpp)
 
 # Create a executable named HapticTeleop
 # with the source file: main.cpp
 qi_create_bin(HapticTeleop ${_srcs})
 
-qi_use_lib(HapticTeleop ZENOM HAPTICWAND ALCOMMON ALPROXIES)
+qi_use_lib(HapticTeleop ZENOM HAPTICWAND ALCOMMON ALPROXIES ALMATH)

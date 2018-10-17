@@ -35,9 +35,9 @@ endif()
 # Tell CMake that TeleopModule depends on ALCOMMON and ALPROXIES.
 # This will set the libraries to link TeleopModule with,
 # the include paths, and so on
-qi_use_lib(TeleopModule ALCOMMON ALVISION ALPROXIES BOOST )
+qi_use_lib(TeleopModule ALCOMMON ALVISION ALPROXIES ALMATH BOOST )
 
 #qi_create_bin(testTeleopModule testTeleopModule.cpp)
 #qi_use_lib(testTeleopModule ALCOMMON ALVISION ALPROXIES BOOST)
 qi_create_bin(testTeleopModule testTeleopModule.cpp)
-qi_use_lib(testTeleopModule ALCOMMON ALPROXIES BOOST)
+qi_use_lib(testTeleopModule ALCOMMON ALPROXIES ALMATH BOOST)

@@ -1,0 +1,28 @@
+MatrixTransform {
+  nodeMask 0xffffffff
+  cullingActive TRUE
+  referenceFrame RELATIVE
+  Matrix {
+    2 0 0 0
+    0 1 0 0
+    0 0 4 0
+    0 0 0 1
+  }
+  num_children 1
+  Geode {
+    UniqueID Geode_0
+    nodeMask 0xffffffff
+    cullingActive TRUE
+    num_drawables 1
+    ShapeDrawable {
+      UniqueID ShapeDrawable_1
+      Sphere {
+        Center 3 0 0
+        Radius 1
+      }
+      useDisplayList TRUE
+      useVertexBufferObjects FALSE
+      color 0 1 0 1
+    }
+  }
+}
