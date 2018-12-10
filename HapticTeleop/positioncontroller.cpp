@@ -22,6 +22,12 @@ void PositionController::reset( ColumnVector<5>& pFirstSample, double pPeriod )
     digitalFilter.reset( pFirstSample );
 }
 
+void PositionController::resetStiffnessAndDamping()
+{
+    stiffness = 500, 500, 500, 1,   1;
+    damping   = 5,  5,  5,  0.1, 0.1;
+}
+
 ColumnVector<5> PositionController::force( ColumnVector<5>& w, ColumnVector<5>& wd )
 {
     ColumnVector<5> F_stiff = wd - w;

@@ -13,7 +13,7 @@ public:
     PositionController();
 
 	void reset( ColumnVector<5>& pFirstSample, double pPeriod );
-
+    void resetStiffnessAndDamping();
 	ColumnVector<5> force( ColumnVector<5>& w, ColumnVector<5>& wd ); 
 
     ColumnVector<5> stiffness;
