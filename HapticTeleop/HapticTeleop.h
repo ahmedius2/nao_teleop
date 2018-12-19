@@ -22,6 +22,7 @@
 #include <alproxies/almotionproxy.h>
 #include <alproxies/albasicawarenessproxy.h>
 #include <alproxies/alautonomouslifeproxy.h>
+#include <alproxies/alautonomousmovesproxy.h>
 #include <alproxies/almemoryproxy.h>
 #include <boost/swap.hpp>
 #include <almath/tools/almath.h>
@@ -31,6 +32,7 @@
 #include "znm-core_global.h"
 #include "NaoKinematics/naolimits.h"
 
+//#define NAO_IP_ADDR "169.254.194.19"
 #define NAO_IP_ADDR "169.254.67.213"
 
 #define MATLAB_TCP_PORT 30000
@@ -39,11 +41,11 @@
 
 #define INPUT_CHECK_PERIOD_SEC 0.02
 #define MOVE_ROBOT_PERIOD_SEC 0.1
-#define FEEDBACK_TIME_LIMIT_MS 200
-#define FEEDBACK_WAIT_TIME_LIMIT_MS 1300
+#define FEEDBACK_TIME_LIMIT_MS 300
+#define FEEDBACK_WAIT_TIME_LIMIT_MS 1000
 
 #define MANIP_MODES 4 // Manipulation modes
-#define ALL_MODES (MANIP_MODES+3)
+#define ALL_MODES (MANIP_MODES+2    )
 
 #define HAPTIC_AXES 5
 #define HAPTIC_NUM_OF_JOINTS 6
@@ -55,11 +57,10 @@
 
 #define ROUND(x) std::roundf((float)((x) * 100.0) ) / 100.0
 
-enum TeleopMode   { HEAD, LARM,  RARM, BOTH_ARMS,  WALK_TO, WALK_TOWARD, STOP };
-enum FeedbackMode { NO_FEEDBACK,
-                    PUSH_TO_INIT_POS_START, TILT_START, // feedback start
-                    PUSH_TO_INIT_POS_CONTINUE, TILT_CONTINUE,
-                    WAIT_AFTER_FEEDBACK};
+enum TeleopMode   { HEAD, LARM,  RARM, BOTH_ARMS, WALK_TOWARD, STOP };
+enum FeedbackMode { NO_FEEDBACK_START, PUSH_TO_INIT_POS_START,
+                    NO_FEEDBACK_CNT, PUSH_TO_INIT_POS_CNT
+                    };
 
 using namespace Hardware;
 using namespace std;
@@ -120,14 +121,14 @@ private:
 
     void checkInputAndSetMode();
     void moveRobot();
-    inline void enableWandIfDisabled();
-    inline void disableWandIfEnabled();
+    inline void enableForceIfDisabled(double dividorStep);
+    inline void disableForce();
     bool areOfAnyFeetBumpersPressed();
     void hapticGoToPosBlocking(double threshold);
     void connectToMATLAB();
     void disconnectFromMATLAB();
 
-    inline unsigned timeMsToTicks(unsigned milliseconds){
+    inline unsigned msToTicks(unsigned milliseconds){
         return frequency() * milliseconds * 0.001;
     }
 
@@ -162,7 +163,7 @@ private:
         {0.5, 0.5, 0.5, 1.176,  1}, // LARM
         {0.5, 0.5, 0.5, 1.176,  1}, // RARM
         {0.5, 0.5, 0.5, 1.176,  1}, // BOTH_ARMS
-        {1.0/HAPTIC_MAX_X, 1.0/((HAPTIC_MAX_Y-HAPTIC_MIN_Y)/2.0), 1,1,1},// WALK_TO
+        //{1.0/HAPTIC_MAX_X, 1.0/((HAPTIC_MAX_Y-HAPTIC_MIN_Y)/2.0), 1,1,1},// WALK_TO
         {1.0/HAPTIC_MAX_X, 1.0/((HAPTIC_MAX_Y-HAPTIC_MIN_Y)/2.0), 1,1,1},// WALK_TOWARD
         {1, 1, 1, 1,      1} // STOP
     };
@@ -172,7 +173,7 @@ private:
         {0, 0, 0, 0, 0}, // RARM
         {0, 0, 0, 0, 0}, // BOTH_ARMS
         {0, 0, 0, 0, 0}, // WALK_TO
-        {0, 0, 0, 0, 0}, // WALK_TOWARD
+        //{0, 0, 0, 0, 0}, // WALK_TOWARD
         {0, 0, 0, 0, 0}  // STOP
     };
 
@@ -184,6 +185,7 @@ private:
     boost::shared_ptr<AL::ALMotionProxy> motionProxy;
     boost::shared_ptr<AL::ALBasicAwarenessProxy> awarenessProxy;
     boost::shared_ptr<AL::ALMemoryProxy> memoryProxy;
+    boost::shared_ptr<AL::ALAutonomousMovesProxy> automoProxy;
 
     int matlabTCPSocket;
     float bothArmsDiameter = 0.05; // R is the distance between hands
@@ -191,11 +193,12 @@ private:
     bool lHandOpen= false, rHandOpen = false;
     bool useWholeBody = false;
     HapticWand hapticWand;
-    bool hapticWandEnabled = false;
+    bool hapticWandForceEnabled = false;
     SetPoint setPoint;
     std::atomic<FeedbackMode> newFbModeAtmc;
     FeedbackMode fbMode;
     PositionController positionController;
+    double forceDivider = 1.0, forceDividerStep;
     TeleopMode curMode; // Current mode
     ColumnVector<5> lastSamples[MANIP_MODES];
 

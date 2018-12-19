@@ -35,10 +35,14 @@ int HapticTeleop::initialize()
     memoryProxy =  boost::shared_ptr<AL::ALMemoryProxy>(
                 new AL::ALMemoryProxy(broker));
 
+    automoProxy = boost::shared_ptr<AL::ALAutonomousMovesProxy>(
+                new AL::ALAutonomousMovesProxy(broker));
+    automoProxy->setBackgroundStrategy("none");
+
     registerLogVariable( w.getElementsPointer(), "w", 1, HAPTIC_AXES );
     registerLogVariable( wd.getElementsPointer(), "wd", 1, HAPTIC_AXES );
-    //registerLogVariable( wd_inter.getElementsPointer(), "wd_inter", 1,
-    //                     HAPTIC_AXES );
+    registerLogVariable( wd_inter.getElementsPointer(), "wd_inter", 1,
+                         HAPTIC_AXES );
 
     //registerControlVariable( &setPoint.v_lim_mult, "v_lim_mult",1,1);
     registerControlVariable( &openCloseLHandKey, "key_q", 1, 1);
@@ -78,12 +82,13 @@ int HapticTeleop::start()
 
     hapticWand.openDevice();        // Open the q8 card
     hapticWand.calibrateWand();     // Calibrate the haptic wand
+    hapticWand.enableWand();
+    enableForceIfDisabled(1.0);
 
     // The program can still run if connection is unsucccessful
     connectToMATLAB();
 
-    enableWandIfDisabled();
-    fbMode = newFbModeAtmc = NO_FEEDBACK;
+    fbMode = newFbModeAtmc = NO_FEEDBACK_CNT;
 
     w_temp = 0,HAPTIC_START_YPOS,0,0,0;
     for(int i=0; i<MANIP_MODES; ++i)
@@ -120,7 +125,7 @@ int HapticTeleop::start()
                 motionProxy->getTransform("LArm", FRAME_TORSO, false));
 
     // Let arms stay at the last position when walking
-    motionProxy->setMoveArmsEnabled(false,false);
+    //motionProxy->setMoveArmsEnabled(false,false);
     curMode = STOP;
 
     return 0;
@@ -175,69 +180,80 @@ int HapticTeleop::doloop()
         }
     }
 
-    // The NO_FEEDBACK mode will be activated after the feedback is imposed
-    // so, there is no point to assign mode to NO_FEEDBACK from outside
-    if(fbMode == NO_FEEDBACK)
-        fbMode = newFbModeAtmc;
+    FeedbackMode newFbMode = newFbModeAtmc;
+    // state machine !
+    if((fbMode == PUSH_TO_INIT_POS_CNT && newFbMode == NO_FEEDBACK_START) ||
+       (fbMode == NO_FEEDBACK_CNT && newFbMode != NO_FEEDBACK_START))
+    {
+        fbMode = newFbMode;
+    }
 
-    static unsigned fbTickCounter = 0;
+    //std::cout << "fbMode:" << fbMode << std::endl;
+
     switch (fbMode) {
-
+    case NO_FEEDBACK_START:
+        wd = wd_inter = w;
+        fbMode = NO_FEEDBACK_CNT;
+        break;
     case PUSH_TO_INIT_POS_START:
-        setPoint.v_lim_mult = 25.0; // decrease power
-        enableWandIfDisabled();
+        enableForceIfDisabled(period()*5);
         if(isManipulationMode(curMode))
             wd = 0,HAPTIC_START_YPOS,0,0,0;
         else
             wd = 0,HAPTIC_MID_YPOS,0,0,0;
         wd_inter = w;
-        fbMode = PUSH_TO_INIT_POS_CONTINUE;
-    case PUSH_TO_INIT_POS_CONTINUE:
-        if(++fbTickCounter > timeMsToTicks(FEEDBACK_TIME_LIMIT_MS)){
-            fbMode = WAIT_AFTER_FEEDBACK;
-            wd = wd_inter = w;
-        }
+        fbMode = PUSH_TO_INIT_POS_CNT;
         break;
-
-    case TILT_START:
-        enableWandIfDisabled();
+    /*case TILT_START:
+        enableForce();
         wd = w_temp = wd_inter = w;
         fbMode = TILT_CONTINUE;
-    case TILT_CONTINUE:
-        wd(3) = w_temp(3) + 0.004 * cos(13.5*M_PI*elapsedTime()) +
-                0.02 * sin(18*M_PI*elapsedTime());
-        if(++fbTickCounter > timeMsToTicks(FEEDBACK_TIME_LIMIT_MS)){
-            fbMode = WAIT_AFTER_FEEDBACK;
-            wd = wd_inter = w;
-        }
         break;
-
-    case WAIT_AFTER_FEEDBACK:
-        if(++fbTickCounter > timeMsToTicks(FEEDBACK_WAIT_TIME_LIMIT_MS)){
-            fbTickCounter = 0;
-            setPoint.v_lim_mult = 75.0; // increase power again
-            fbMode = newFbModeAtmc = NO_FEEDBACK;
-            wd = wd_inter = w; // do it like this, just once
-        }
-    case NO_FEEDBACK:
-        // I need to detech push and release
-        buttonState = !hapticWand.readDigital(HAPTIC_BUTTON_PIN);
-        if(!buttonState)
-            enableWandIfDisabled();
-        else
-            disableWandIfEnabled();
-        break;
-
+     */
+    // bir yerde kitleniyor ama...
     default:
         break;
     }
 
-    if(hapticWandEnabled){
-        // Desired position.
-        wd_inter = setPoint.find_wd(wd, wd_inter, period() );
-        ColumnVector<5> F = positionController.force( w, wd_inter );
-        hapticWand.generateForces( period(), jointAngles, F.getElementsPointer());
+    switch (fbMode) {
+    case PUSH_TO_INIT_POS_CNT:
+        wd_inter = setPoint.find_wd(wd, wd_inter, period());
+        break;
+    case NO_FEEDBACK_CNT:
+        buttonState = !hapticWand.readDigital(HAPTIC_BUTTON_PIN);
+        if(!buttonState) {
+            enableForceIfDisabled(period()*50);
+            wd_inter = setPoint.find_wd(wd, wd_inter, period());
+        }
+        else{
+            disableForce();
+            wd = wd_inter = w;
+        }
+        break;
+    /*case TILT_CONTINUE:
+        wd(3) = w_temp(3) + 0.004 * cos(13.5*M_PI*elapsedTime()) +
+                0.02 * sin(18*M_PI*elapsedTime());
+        break;
+    */
+    default:
+        break;
     }
+
+    // Desired position.
+
+    ColumnVector<5> F;
+    if(hapticWandForceEnabled){
+        F = positionController.force( w, wd_inter ) / forceDivider;
+        if(forceDivider > 1){
+            forceDivider -= forceDividerStep; // Raise power to full in 250 ms
+        }
+        else
+            forceDivider = 1;
+    }
+    else
+        F = 0,0,0,0,0;
+
+    hapticWand.generateForces( period(), jointAngles, F.getElementsPointer());
 
     return 0;
 }
@@ -250,7 +266,8 @@ int HapticTeleop::doloop()
  */
 int HapticTeleop::stop()
 {
-    enableWandIfDisabled();
+    enableForceIfDisabled(1.0);
+
 
     //Go to start position of haptic wand
     wd = 0,0,0,0,0;
@@ -262,7 +279,8 @@ int HapticTeleop::stop()
     hapticGoToPosBlocking(0.02);
     std::cout << "now disabling wand" << std::endl;
 
-    disableWandIfEnabled();
+    disableForce();
+    hapticWand.closeDevice();
 
     awarenessProxy->startAwareness();
     motionProxy->wbEnable(false);
@@ -270,9 +288,6 @@ int HapticTeleop::stop()
 
     if(matlabTCPSocket != -1)
         disconnectFromMATLAB();
-
-    hapticWand.closeDevice();
-
 
     return 0;
 }
@@ -290,12 +305,13 @@ int HapticTeleop::terminate()
     commTask->finishTask();
     delete commTask;
 
+    hapticWand.disableWand();
+
     return 0;
 }
 
 void HapticTeleop::checkInputAndSetMode()
 {
-
     // don't let it to switch whole body while not stopped
     if((curMode == STOP) && wholeBodyKey){
         commQueue.push([this](){
@@ -315,9 +331,9 @@ void HapticTeleop::checkInputAndSetMode()
     if(openCloseRHandKey){
         commQueue.push([this](){
             if(rHandOpen)
-                motionProxy->post.openHand("RHand");
+                motionProxy->openHand("RHand");
             else
-                motionProxy->post.closeHand("RHand");
+                motionProxy->closeHand("RHand");
             rHandOpen = !rHandOpen;
         });
         std::cout << "openCloseRHand" << std::endl;
@@ -326,18 +342,18 @@ void HapticTeleop::checkInputAndSetMode()
     if(openCloseLHandKey){
         commQueue.push([this](){
             if(lHandOpen)
-                motionProxy->post.openHand("LHand");
+                motionProxy->openHand("LHand");
             else
-                motionProxy->post.closeHand("LHand");
+                motionProxy->closeHand("LHand");
             lHandOpen = !lHandOpen;
         });
         std::cout << "openCloseLHand" << std::endl;
     }
 
     if(bothArmsrIncKey)
-        bothArmsDiameter += 0.025;
+        bothArmsDiameter += 0.0125;
     else if(bothArmsrDecKey)
-        bothArmsDiameter -= 0.025;
+        bothArmsDiameter -= 0.0125;
 
     // I don't know why is this needed, maybe cuz of QT
     openCloseRHandKey= openCloseLHandKey= bothArmsrIncKey= bothArmsrDecKey=0;
@@ -345,7 +361,6 @@ void HapticTeleop::checkInputAndSetMode()
     // mode change
     TeleopMode newMode = STOP;
     if(headKey) newMode = HEAD;
-    else if(walkToKey) newMode = WALK_TO;
     else if(walkTowardKey) newMode = WALK_TOWARD;
     else if(cartLHandKey && cartRHandKey) newMode = BOTH_ARMS;
     else if(cartLHandKey) newMode = LARM;
@@ -368,18 +383,13 @@ void HapticTeleop::checkInputAndSetMode()
         //newFbModeAtmc = NO_FEEDBACK;
         std::cout << "Mode switched to " << curMode << std::endl;
         motionProxy->stopMove();
-        if(curMode == WALK_TO)
-            commQueue.push([this](){
-                initRobotPosWalk = motionProxy->getRobotPosition(false);
-            });
-
     }
 }
 
 void HapticTeleop::moveRobot()
 {
     // Op X is Nao Y, Op Y is Nao X
-    static std::vector<float> opCoords(HAPTIC_AXES);
+    std::vector<float> opCoords(HAPTIC_AXES);
     opCoords[0] = ROUND(((isManipulationMode(curMode) ?
             HAPTIC_START_YPOS : HAPTIC_MID_YPOS)-w(2))
             * mappingCoefs[curMode][1] + mappingBias[curMode][1]);
@@ -392,30 +402,30 @@ void HapticTeleop::moveRobot()
     opCoords[4] = ROUND(w(4) * mappingCoefs[curMode][3]+
             mappingBias[curMode][3]);
 
-    std::cout << "opCoords:" << opCoords << std::endl;
-
-    commQueue.push([this](){
+    commQueue.push([=]() mutable {
         //std::cout << "opCoords:" << opCoords << std::endl;
+        //auto &opCoords = hapticCoords;
         using namespace AL;
 
         if (curMode == BOTH_ARMS){
             if(matlabTCPSocket != -1){
-                std::vector<float> armAngles(2*NUM_OF_ARM_ANGLES);
-
                 opCoords[4] = bothArmsDiameter;
-                // send opCoords to matlab
+                // send opCoords and current mode to MATLAB
+                opCoords.push_back(BOTH_ARMS);
                 write(matlabTCPSocket,(char*)opCoords.data(),
                       opCoords.size()*sizeof(float));
                 // receive target angles and feedback mode from matlab
+                std::vector<float> armAngles(2*NUM_OF_ARM_ANGLES+1);
                 read(matlabTCPSocket,(char*)armAngles.data(),
                         armAngles.size()*sizeof(float));
-                float fb;
-                read(matlabTCPSocket,(char*)&fb,sizeof(float));
-                newFbModeAtmc = (FeedbackMode)fb;
+                newFbModeAtmc = (FeedbackMode)armAngles.back();
+                armAngles.pop_back();
+
+                //std::cout << "armAngles:" << armAngles << std::endl;
 
                 // move arms of nao
                 motionProxy->setAngles(ALValue::array("LArm","RArm"),
-                                       armAngles,0.8f);
+                                       armAngles,0.9f);
             }
             else{
                 std::cout << "Warning: BOTH ARMS mode can be only used when "
@@ -425,16 +435,34 @@ void HapticTeleop::moveRobot()
         else if(curMode == RARM){
             Math::Transform targetTfRArm = initTfRArm *
                     Math::Transform(opCoords[0],opCoords[1],opCoords[2]) *
-                    Math::Transform::fromRotX(opCoords[3]);
+                    Math::Transform::fromRotX(-opCoords[3]);
             motionProxy->transformInterpolations("RArm", FRAME_TORSO,
-                    targetTfRArm.toVector(),CONTROL_AXES, 0.75f);
+                    targetTfRArm.toVector(), CONTROL_AXES, 0.7f);
+            if(matlabTCPSocket != -1){
+                auto rArmAngles = motionProxy->getAngles("RArm",false);
+                rArmAngles[5] = RARM;
+                write(matlabTCPSocket,(char*)rArmAngles.data(),
+                      rArmAngles.size()*sizeof(float));
+                float fb;
+                read(matlabTCPSocket,(char*)&fb,sizeof(float));
+                newFbModeAtmc = (FeedbackMode)fb;
+            }
         }
         else if(curMode == LARM){
             Math::Transform targetTfLArm = initTfLArm *
                     Math::Transform(opCoords[0],opCoords[1],opCoords[2]) *
                     Math::Transform::fromRotX(opCoords[3]);
             motionProxy->transformInterpolations("LArm", FRAME_TORSO,
-                    targetTfLArm.toVector(),CONTROL_AXES, 0.75f);
+                    targetTfLArm.toVector(),CONTROL_AXES, 0.7f);
+            if(matlabTCPSocket != -1){
+                auto lArmAngles = motionProxy->getAngles("LArm",false);
+                lArmAngles[5] = LARM;
+                write(matlabTCPSocket,(char*)lArmAngles.data(),
+                      lArmAngles.size()*sizeof(float));
+                float fb;
+                read(matlabTCPSocket,(char*)&fb,sizeof(float));
+                newFbModeAtmc = (FeedbackMode)fb;
+            }
         }
         else if(curMode == HEAD){
             ALValue effectorNames = ALValue::array("HeadPitch", "HeadYaw");
@@ -447,30 +475,12 @@ void HapticTeleop::moveRobot()
             motionProxy->angleInterpolationWithSpeed(effectorNames,
                                                      targetHeadAngles,0.4f);
         }
-        else if(curMode == WALK_TO){
-            std::vector<float> curRobotPosWalk =
-                    motionProxy->getRobotPosition(false);
-            if(initRobotPosWalk[0] + opCoords[0] - curRobotPosWalk[0] > 0 &&
-               areOfAnyFeetBumpersPressed())
-            {
-                motionProxy->stopMove();
-                newFbModeAtmc = PUSH_TO_INIT_POS_START;
-            }
-            else{
-                // doesn't work well...
-                motionProxy->moveTo(
-                    initRobotPosWalk[0] + opCoords[0] - curRobotPosWalk[0],
-                    initRobotPosWalk[1] + opCoords[1] - curRobotPosWalk[1],
-                    initRobotPosWalk[2]);
-                //newFbModeAtmc = NO_FEEDBACK;
-            }
-        }
         else if(curMode == WALK_TOWARD){
             if(opCoords[0] > 0.2 && areOfAnyFeetBumpersPressed()){
                 motionProxy->stopMove();
                 newFbModeAtmc = PUSH_TO_INIT_POS_START; // override
             }
-            else{
+            else {
                 if(opCoords[0] >= -0.2 && opCoords[0] <= 0.2 &&
                     opCoords[1] >= -0.2 && opCoords[1] <= 0.2)
                 { // stop
@@ -484,6 +494,7 @@ void HapticTeleop::moveRobot()
                     // walk horizontal (crab walk :))
                     motionProxy->moveToward(0, opCoords[1], 0);
                 }
+                newFbModeAtmc = NO_FEEDBACK_START;
             }
 
         }
@@ -491,20 +502,18 @@ void HapticTeleop::moveRobot()
 
 }
 
-inline void HapticTeleop::enableWandIfDisabled()
+inline void HapticTeleop::enableForceIfDisabled(double dividorStep)
 {
-    if(!hapticWandEnabled){
-        hapticWand.enableWand();
-        hapticWandEnabled = true;
+    if(!hapticWandForceEnabled){
+        hapticWandForceEnabled = true;
+        forceDivider = 20;
+        forceDividerStep = dividorStep;
     }
 }
 
-inline void HapticTeleop::disableWandIfEnabled()
+inline void HapticTeleop::disableForce()
 {
-    if(hapticWandEnabled){
-        hapticWand.disableWand();
-        hapticWandEnabled = false;
-    }
+    hapticWandForceEnabled = false;
 }
 
 // go to target wd and stop when wand is close as threshold cm

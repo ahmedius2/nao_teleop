@@ -7,7 +7,7 @@ template <typename T> int sgn(T val) {
 SetPoint::SetPoint()
 {	
 	toSI = 1e-3, 1e-3, 1e-3, M_PI/180, M_PI/180;	
-    v_lim_mult = 75.0;
+    v_lim_mult = 70.0;
 
 }
 
