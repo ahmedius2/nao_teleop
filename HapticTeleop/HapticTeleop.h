@@ -23,6 +23,7 @@
 #include <alproxies/albasicawarenessproxy.h>
 #include <alproxies/alautonomouslifeproxy.h>
 #include <alproxies/alautonomousmovesproxy.h>
+#include <alproxies/alrobotpostureproxy.h>
 #include <alproxies/almemoryproxy.h>
 #include <boost/swap.hpp>
 #include <almath/tools/almath.h>
@@ -39,8 +40,8 @@
 
 #define NUM_OF_ARM_ANGLES 6
 
-#define INPUT_CHECK_PERIOD_SEC 0.02
-#define MOVE_ROBOT_PERIOD_SEC 0.1
+#define INPUT_CHECK_PERIOD_SEC 0.1
+//#define MOVE_ROBOT_PERIOD_SEC 0.1
 #define FEEDBACK_TIME_LIMIT_MS 300
 #define FEEDBACK_WAIT_TIME_LIMIT_MS 1000
 
@@ -53,7 +54,7 @@
 #define HAPTIC_BUTTON_PIN 4
 
 #define FRAME_TORSO 1
-#define CONTROL_AXES 63
+#define CONTROL_AXES 63 // all axes
 
 #define ROUND(x) std::roundf((float)((x) * 100.0) ) / 100.0
 
@@ -139,20 +140,18 @@ private:
     NetworkTask *commTask; // communication thread
 
     // ----- Log Variables -----
+    ColumnVector<5> F;
     ColumnVector<5> w;      // current world position.
     ColumnVector<5> w_temp;
     ColumnVector<5> wd;     // desired world position.
     ColumnVector<5> wd_inter;
     // ----- Control Variables -----
 
-    // catch keyboard strokes to change mode or any ohter purpose
-    double headKey = 0; // HEAD mode
-    double cartLHandKey = 0,cartRHandKey = 0; // LARM, RARM, BOTH_ARMS mode
-    double openCloseLHandKey = 0,openCloseRHandKey = 0; // Open - Close hand
-    double walkToKey = 0; // WALK_TO mode
-    double walkTowardKey = 0; // WALK_TOWARD mode
-    double wholeBodyKey = 0;
-    double bothArmsrIncKey = 0, bothArmsrDecKey = 0;
+    // get input from user via gui and save it to these control variables
+    double modeSelectedByUser;
+    double rHandStateFromUser, lHandStateFromUser, wbStateFromUser;
+    double distBetwArms;
+
     // Is the button state changed to released from pushed?
     // Make sure the button is released before mode switch
     bool buttonState = false;
@@ -172,8 +171,8 @@ private:
         {0, 0, 0, 0, 0}, // LARM
         {0, 0, 0, 0, 0}, // RARM
         {0, 0, 0, 0, 0}, // BOTH_ARMS
-        {0, 0, 0, 0, 0}, // WALK_TO
-        //{0, 0, 0, 0, 0}, // WALK_TOWARD
+        //{0, 0, 0, 0, 0}, // WALK_TO
+        {0, 0, 0, 0, 0}, // WALK_TOWARD
         {0, 0, 0, 0, 0}  // STOP
     };
 
@@ -186,12 +185,13 @@ private:
     boost::shared_ptr<AL::ALBasicAwarenessProxy> awarenessProxy;
     boost::shared_ptr<AL::ALMemoryProxy> memoryProxy;
     boost::shared_ptr<AL::ALAutonomousMovesProxy> automoProxy;
+    boost::shared_ptr<AL::ALRobotPostureProxy> postureProxy;
+
 
     int matlabTCPSocket;
-    float bothArmsDiameter = 0.05; // R is the distance between hands
 
-    bool lHandOpen= false, rHandOpen = false;
-    bool useWholeBody = false;
+    bool lHandState= false, rHandState = false;
+    bool wbState = false;
     HapticWand hapticWand;
     bool hapticWandForceEnabled = false;
     SetPoint setPoint;

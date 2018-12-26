@@ -24,7 +24,7 @@ void PositionController::reset( ColumnVector<5>& pFirstSample, double pPeriod )
 
 void PositionController::resetStiffnessAndDamping()
 {
-    stiffness = 500, 500, 500, 1,   1;
+    stiffness = 500, 500, 500, 1, 1;
     damping   = 5,  5,  5,  0.1, 0.1;
 }
 
