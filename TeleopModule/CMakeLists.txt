@@ -8,7 +8,7 @@ find_package(qibuild)
 
 option(TELEOPMODULE_IS_REMOTE
   "module is compiled as a remote module (ON or OFF)"
-  OFF)
+  ON)
 
 
 add_definitions(-DBOOST_SIGNALS_NO_DEPRECATION_WARNING )

@@ -34,7 +34,8 @@
 #include "NaoKinematics/naolimits.h"
 
 //#define NAO_IP_ADDR "169.254.194.19"
-#define NAO_IP_ADDR "169.254.67.213"
+//#define NAO_IP_ADDR "169.254.67.213"
+#define NAO_IP_ADDR "10.1.18.10"
 
 #define MATLAB_TCP_PORT 30000
 
@@ -53,7 +54,7 @@
 #define XYZRPY 6
 #define HAPTIC_BUTTON_PIN 4
 
-#define FRAME_TORSO 1
+#define FRAME_TORSO 0
 #define CONTROL_AXES 63 // all axes
 
 #define ROUND(x) std::roundf((float)((x) * 100.0) ) / 100.0
@@ -122,6 +123,7 @@ private:
 
     void checkInputAndSetMode();
     void moveRobot();
+    void openOrCloseHand(bool isOpen, std::string hand);
     inline void enableForceIfDisabled(double dividorStep);
     inline void disableForce();
     bool areOfAnyFeetBumpersPressed();
@@ -156,6 +158,12 @@ private:
     // Make sure the button is released before mode switch
     bool buttonState = false;
 
+    //predefined angles for arms
+    const float predefinedArmAngles[NUM_OF_ARM_ANGLES*2] = {
+        1.38503, -0.0193124, -1.54517, -1.37153, 0.0280995, 0,
+        1.38503, 0.0193124, 1.54517, 1.37153, -0.0280997, 0};
+    std::vector<float> preArmAnglesVec;
+
     // ----- Variables -----
     double mappingCoefs[ALL_MODES][HAPTIC_AXES] = {
         {1, 1, 1, 1.8392, 0.1788},  // HEAD
@@ -185,7 +193,7 @@ private:
     boost::shared_ptr<AL::ALBasicAwarenessProxy> awarenessProxy;
     boost::shared_ptr<AL::ALMemoryProxy> memoryProxy;
     boost::shared_ptr<AL::ALAutonomousMovesProxy> automoProxy;
-    boost::shared_ptr<AL::ALRobotPostureProxy> postureProxy;
+    //boost::shared_ptr<AL::ALRobotPostureProxy> postureProxy;
 
 
     int matlabTCPSocket;

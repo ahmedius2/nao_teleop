@@ -1,16 +1,115 @@
 #include <iostream>
+#include <vector>
 #include <alproxies/almotionproxy.h>
 #include <alproxies/alrobotpostureproxy.h>
 #include <almath/tools/almath.h>
 #include <almath/tools/altransformhelpers.h>
+#include <alproxies/albasicawarenessproxy.h>
+
 
 #include <boost/thread.hpp>
 #include <boost/atomic.hpp>
 
+#include <unistd.h>
 #include <cmath>
 
 using namespace AL::Math;
 
+
+
+int main(int argc, char **argv)
+{
+    std::string robotIp = "192.168.43.204";
+
+    if (argc < 2) {
+        std::cerr << "Usage: almotion_getangles robotIp "
+                  << "(optional default \"169.254.67.213\")."<< std::endl;
+    }
+    else {
+        robotIp = argv[1];
+    }
+
+    AL::ALMotionProxy motionProxy(robotIp);
+    AL::ALRobotPostureProxy robotPostureProxy(robotIp);
+    AL::ALBasicAwarenessProxy awarenessProxy(robotIp);
+
+    motionProxy.setBreathEnabled("Body", false);
+    motionProxy.setIdlePostureEnabled("Body", false);
+    awarenessProxy.stopAwareness();
+    motionProxy.setSmartStiffnessEnabled(true);
+    motionProxy.setMoveArmsEnabled(false, false);
+
+    robotPostureProxy.goToPosture("StandInit",0.5f);
+//    motionProxy.stiffnessInterpolation(AL::ALValue::array("LArm","RArm"),
+//                                       0.5f, 0.75f);
+
+    // Arm Angles for cart teleoperation
+    //const float predefArmAngles[12] = { // LArm and RArm
+    //    0.391128, -0.135034, -1.46348, -0.831386, 1.58305, 0.622,
+    //    0.34826, 0.124212, 1.50174, 0.750168, -1.53251, 0.664};
+//    const float predefArmAngles[12] = { // LArm and RArm
+//        -0.375,  0.1, 0, -0.5, 0, 0, // 0,  0.5, 0, -0.75, 0, 0.6, default
+//        -0.375, -0.1, 0,  0.5, 0, 0};// 0, -0.5, 0,  0.75, 0, 0.6  values
+//    std::vector<float> armAnglesVec;
+//    armAnglesVec.assign(predefArmAngles,
+//                           predefArmAngles+12);
+
+//    motionProxy.angleInterpolationWithSpeed(AL::ALValue::array("LArm","RArm"),
+//                                            armAnglesVec,0.4f);
+
+    motionProxy.post.openHand("RHand"); motionProxy.openHand("LHand");
+    char ch; std::cin >> ch;
+    motionProxy.post.closeHand("RHand"); motionProxy.closeHand("LHand");
+
+
+    std::vector<float> LArmPos = motionProxy.getPosition("LArm", 0, false);
+    std::vector<float> RArmPos = motionProxy.getPosition("RArm", 0, false);
+
+    //motionProxy.moveToward(0.1,0,0);
+    usleep(2000000);
+    std::cout << "NOW MOVE ARMS!\n";
+    motionProxy.setMoveArmsEnabled(true, true);
+    const int controlAxes = 7;
+    const unsigned moveAxis = 0;
+    for(unsigned i=0; i<3; ++i){
+        LArmPos[moveAxis]+=0.005;
+        RArmPos[moveAxis]-=0.005;
+        motionProxy.positionInterpolations(
+                                   AL::ALValue::array("LArm","RArm"),
+                                   0,
+                                   AL::ALValue::array(LArmPos,RArmPos),
+                                   AL::ALValue::array(controlAxes,controlAxes),
+                                   AL::ALValue::array(0.4f,0.4f));
+    }
+    for(unsigned i=0; i<6; ++i){
+        LArmPos[moveAxis]-=0.005;
+        RArmPos[moveAxis]+=0.005;
+        motionProxy.positionInterpolations(
+                                   AL::ALValue::array("LArm","RArm"),
+                                   0,
+                                   AL::ALValue::array(LArmPos,RArmPos),
+                                   AL::ALValue::array(controlAxes,controlAxes),
+                                   AL::ALValue::array(0.4f,0.4f));
+    }
+    for(unsigned i=0; i<3; ++i){
+        LArmPos[moveAxis]+=0.005;
+        RArmPos[moveAxis]-=0.005;
+        motionProxy.positionInterpolations(
+                                   AL::ALValue::array("LArm","RArm"),
+                                   0,
+                                   AL::ALValue::array(LArmPos,RArmPos),
+                                   AL::ALValue::array(controlAxes,controlAxes),
+                                   AL::ALValue::array(0.4f,0.4f));
+    }
+    motionProxy.setMoveArmsEnabled(false, false);
+    usleep(2000000);
+    motionProxy.stopMove();
+
+    return 0;
+}
+
+// This main is for getting arm angles from a position make by user(human)
+/*
 int main(int argc, char **argv)
 {
     std::string robotIp = "10.1.18.24";
@@ -25,106 +124,25 @@ int main(int argc, char **argv)
 
     AL::ALMotionProxy motionProxy(robotIp);
     AL::ALRobotPostureProxy robotPostureProxy(robotIp);
+    AL::ALBasicAwarenessProxy awarenessProxy(robotIp);
 
-    motionProxy.wbEnable(true);
-    motionProxy.wbFootState("Free", "Legs"); // can be also Plane Legs
-    motionProxy.wbEnableBalanceConstraint(false, "Legs");
+    motionProxy.setBreathEnabled("Body", false);
+    motionProxy.setIdlePostureEnabled("Body", false);
+    awarenessProxy.stopAwareness();
 
     // Example that finds the difference between the command and sensed angles.
-    robotPostureProxy.goToPosture("StandZero", 0.5f);
+    //robotPostureProxy.goToPosture("StandZero", 0.5f);
+    motionProxy.stiffnessInterpolation(AL::ALValue::array("LArm","RArm"),
+                                       0.0f, 0.75f);
 
-    const float pi = 3.14159265359f;
-    const int FRAME_TORSO = 1, CONTROL_AXES = 63;
-    //AL::Math::Transform headTf = motion.getTransform("Head", 1, false);
-    static const float armAngles[] = {
-        1.38503, -0.0193124, -1.54517, -1.37153, 0.0280995, 0,
-        1.38503, 0.0193124, 1.54517, 1.37153, -0.0280997, 0};
-    std::vector<float>targetArmAngles;
-    targetArmAngles.assign(armAngles,armAngles+12);
-    motionProxy.angleInterpolationWithSpeed( AL::ALValue::array("LArm","RArm"),
-                                             targetArmAngles,
-                                             0.3f);
-    /*
-    const Transform initTfRArm = Transform(
-                motionProxy.getTransform("RArm", FRAME_TORSO, false));
-    const Transform initTfLArm = Transform(
-                motionProxy.getTransform("LArm", FRAME_TORSO, false));
-    */
-    float xCenter = 0.15f;
-    float yCenter = 0.0f;
-    float zCenter = 0.02f;
-    float r = 0.05;
-
-    for(float alpha=-pi/3.0; alpha<=pi/3.0 ; alpha += 0.1)
-    {
-        // TO DO
-        // initTfArmsCenter
-        Transform targetTfLArm = Transform(xCenter, yCenter+(r*std::cos(alpha)),
-                          zCenter-(r*std::sin(alpha))) *
-                Transform::fromRotX(-alpha-pi/2.0f);
-        Transform targetTfRArm = Transform(xCenter, yCenter-(r*std::cos(alpha)),
-                          zCenter+(r*std::sin(alpha))) *
-                Transform::fromRotX(-alpha+pi/2.0f);
-
-        std::cout << "Transform of LArm" << std::endl;
-        std::cout << targetTfLArm.r1_c1 << " " << targetTfLArm.r1_c2 << " " <<
-                     targetTfLArm.r1_c3 << " " << targetTfLArm.r1_c4 << std::endl;
-        std::cout << targetTfLArm.r2_c1 << " " << targetTfLArm.r2_c2 << " " <<
-                     targetTfLArm.r2_c3 << " " << targetTfLArm.r2_c4 << std::endl;
-        std::cout << targetTfLArm.r3_c1 << " " << targetTfLArm.r3_c2 << " " <<
-                     targetTfLArm.r3_c3 << " " << targetTfLArm.r3_c4 << std::endl;
-        std::cout << "0 0 0 1" << std::endl;
-        std::cout << "Transform of RArm" << std::endl;
-        std::cout << targetTfRArm.r1_c1 << " " << targetTfRArm.r1_c2 << " " <<
-                     targetTfRArm.r1_c3 << " " << targetTfRArm.r1_c4 << std::endl;
-        std::cout << targetTfRArm.r2_c1 << " " << targetTfRArm.r2_c2 << " " <<
-                     targetTfRArm.r2_c3 << " " << targetTfRArm.r2_c4 << std::endl;
-        std::cout << targetTfRArm.r3_c1 << " " << targetTfRArm.r3_c2 << " " <<
-                     targetTfRArm.r3_c3 << " " << targetTfRArm.r3_c4 << std::endl;
-        std::cout << "0 0 0 1" << std::endl;
-        AL::ALValue armsPathList = AL::ALValue::array(
-                    AL::ALValue(targetTfLArm.toVector()),
-                    AL::ALValue(targetTfRArm.toVector()));
-        AL::ALValue axisMask = AL::ALValue::array(CONTROL_AXES,CONTROL_AXES);
-        AL::ALValue timesList = AL::ALValue::array(
-                    AL::ALValue(0.5f),
-                    AL::ALValue(0.5f));
-        AL::ALValue effectorNames = AL::ALValue::array("LArm","RArm");
-
-        motionProxy.transformInterpolations(effectorNames, FRAME_TORSO,
-                                            armsPathList,axisMask, timesList);
+    while(true){
+        std::vector<float> rArmAngles = motionProxy.getAngles("RArm",false);
+        std::cout << "RArm angles:" << rArmAngles << std::endl;
+        std::vector<float> lArmAngles = motionProxy.getAngles("LArm",false);
+        std::cout << "LArm angles:" << lArmAngles << std::endl;
     }
-
-    motionProxy.rest();
 
     return 0;
 }
-
-/*
-int main(int argc, char **argv)
-{
-  std::string robotIp = "10.1.18.5";
-
-  if (argc < 2) {
-    std::cerr << "Usage: almotion_getbodynames robotIp "
-              << "(optional default \"127.0.0.1\")."<< std::endl;
-  }
-  else {
-    robotIp = argv[1];
-  }
-
-  AL::ALMotionProxy motion(robotIp);
-
-  // Example showing how to get the names of all the joints in the body.
-  std::vector<std::string> bodyNames = motion.getBodyNames("Body");
-  std::cout << "All joints in Body: " << std::endl;
-  std::cout << bodyNames << std::endl;
-
-  // Example showing how to get the names of all the joints in the left leg.
-  std::vector<std::string> leftLegJointNames = motion.getBodyNames("LLeg");
-  std::cout << "All joints in LLeg: " << std::endl;
-  std::cout << leftLegJointNames << std::endl;
-
-  return 0;
-}
 */
+
