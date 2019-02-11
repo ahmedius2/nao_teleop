@@ -22,7 +22,7 @@ set(_srcs
     setpoint.h
     setpoint.cpp
     hapticlimits.h
-    NaoKinematics/naolimits.h
+    naolimits.h
     HapticTeleop.cpp
     HapticTeleop.h
     main.cpp)

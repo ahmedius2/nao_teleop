@@ -31,18 +31,16 @@
 #include "setpoint.h"
 #include "positioncontroller.h"
 #include "znm-core_global.h"
-#include "NaoKinematics/naolimits.h"
+#include "naolimits.h"
 
-//#define NAO_IP_ADDR "169.254.194.19"
-//#define NAO_IP_ADDR "169.254.67.213"
-#define NAO_IP_ADDR "10.1.18.10"
+#define NAO_IP_ADDR "10.1.18.59"
+//#define NAO_IP_ADDR "192.168.43.204"
 
 #define MATLAB_TCP_PORT 30000
 
 #define NUM_OF_ARM_ANGLES 6
 
 #define INPUT_CHECK_PERIOD_SEC 0.1
-//#define MOVE_ROBOT_PERIOD_SEC 0.1
 #define FEEDBACK_TIME_LIMIT_MS 300
 #define FEEDBACK_WAIT_TIME_LIMIT_MS 1000
 

@@ -157,14 +157,8 @@ int HapticTeleop::doloop()
         if( commDataMutex.try_lock()){
             if(commQueue.empty()){
                 checkInputAndSetMode();
-                //static unsigned moveRobotFreqCounter = 0;
-                //if(++moveRobotFreqCounter * INPUT_CHECK_PERIOD_SEC ==
-                //   MOVE_ROBOT_PERIOD_SEC)
-                //{
                 if(curMode != STOP)
                     moveRobot();
-                //    moveRobotFreqCounter = 0;
-                //}
             }
             commDataMutex.unlock();
             commCondVar.notify_one();
@@ -417,9 +411,9 @@ void HapticTeleop::moveRobot()
             }
         }
         else if(curMode == RARM){
-            Math::Transform targetTfRArm = initTfRArm *
-                    Math::Transform(opCoords[0],opCoords[1],opCoords[2]) *
-                    Math::Transform::fromRotX(-opCoords[3]);
+            Math::Transform targetTfRArm = Math::Transform::fromPosition(
+                        opCoords[0],opCoords[1],opCoords[2],
+                        -opCoords[3],0,0) * initTfRArm;
             motionProxy->transformInterpolations("RArm", FRAME_TORSO,
                     targetTfRArm.toVector(), CONTROL_AXES, 0.5f);
             if(matlabTCPSocket != -1){ // get feedback
@@ -432,13 +426,13 @@ void HapticTeleop::moveRobot()
                 newFbModeAtmc = (FeedbackMode)fb;
             }
         }
-        else if(curMode == LARM){ // get feedback
-            Math::Transform targetTfLArm = initTfLArm *
-                    Math::Transform(opCoords[0],opCoords[1],opCoords[2]) *
-                    Math::Transform::fromRotX(opCoords[3]);
+        else if(curMode == LARM){
+            Math::Transform targetTfLArm = Math::Transform::fromPosition(
+                        opCoords[0],opCoords[1],opCoords[2],
+                        opCoords[3],0,0) * initTfLArm;
             motionProxy->transformInterpolations("LArm", FRAME_TORSO,
                     targetTfLArm.toVector(),CONTROL_AXES, 0.5f);
-            if(matlabTCPSocket != -1){
+            if(matlabTCPSocket != -1){  // get feedback
                 auto lArmAngles = motionProxy->getAngles("LArm",false);
                 lArmAngles[5] = LARM;
                 write(matlabTCPSocket,(char*)lArmAngles.data(),
