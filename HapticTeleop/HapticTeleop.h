@@ -33,19 +33,19 @@
 #include "znm-core_global.h"
 #include "naolimits.h"
 
-#define NAO_IP_ADDR "10.1.18.59"
+#define NAO_IP_ADDR "10.1.18.12"
 //#define NAO_IP_ADDR "192.168.43.204"
 
-#define MATLAB_TCP_PORT 30000
+#define MATLAB_TCP_PORT 19345
 
 #define NUM_OF_ARM_ANGLES 6
 
 #define INPUT_CHECK_PERIOD_SEC 0.1
-#define FEEDBACK_TIME_LIMIT_MS 300
-#define FEEDBACK_WAIT_TIME_LIMIT_MS 1000
+#define FB_IMPOSE_TIME 0.3
+#define FB_TOTAL_TIME 3.0
 
 #define MANIP_MODES 4 // Manipulation modes
-#define ALL_MODES (MANIP_MODES+2    )
+#define ALL_MODES (MANIP_MODES+2)
 
 #define HAPTIC_AXES 5
 #define HAPTIC_NUM_OF_JOINTS 6
@@ -58,8 +58,8 @@
 #define ROUND(x) std::roundf((float)((x) * 100.0) ) / 100.0
 
 enum TeleopMode   { HEAD, LARM,  RARM, BOTH_ARMS, WALK_TOWARD, STOP };
-enum FeedbackMode { NO_FEEDBACK_START, PUSH_TO_INIT_POS_START,
-                    NO_FEEDBACK_CNT, PUSH_TO_INIT_POS_CNT
+enum FeedbackMode { NO_FEEDBACK_START, FEEDBACK_START,
+                    NO_FEEDBACK_CNT, FEEDBACK_CNT
                     };
 
 using namespace Hardware;
@@ -115,8 +115,12 @@ private:
         }
     };
 
-    static bool isManipulationMode(TeleopMode m){
-        return (m == HEAD || m == LARM || m == RARM || m == BOTH_ARMS);
+    static inline bool isArmMode(TeleopMode m){
+        return ( m == LARM || m == RARM || m == BOTH_ARMS);
+    }
+
+    inline double elapsedFbTime(){
+        return elapsedTime() - fbStartTime;
     }
 
     void checkInputAndSetMode();
@@ -152,8 +156,6 @@ private:
     double rHandStateFromUser, lHandStateFromUser, wbStateFromUser;
     double distBetwArms;
 
-    // Is the button state changed to released from pushed?
-    // Make sure the button is released before mode switch
     bool buttonState = false;
 
     //predefined angles for arms
@@ -168,7 +170,6 @@ private:
         {0.5, 0.5, 0.5, 1.176,  1}, // LARM
         {0.5, 0.5, 0.5, 1.176,  1}, // RARM
         {0.5, 0.5, 0.5, 1.176,  1}, // BOTH_ARMS
-        //{1.0/HAPTIC_MAX_X, 1.0/((HAPTIC_MAX_Y-HAPTIC_MIN_Y)/2.0), 1,1,1},// WALK_TO
         {1.0/HAPTIC_MAX_X, 1.0/((HAPTIC_MAX_Y-HAPTIC_MIN_Y)/2.0), 1,1,1},// WALK_TOWARD
         {1, 1, 1, 1,      1} // STOP
     };
@@ -177,7 +178,6 @@ private:
         {0, 0, 0, 0, 0}, // LARM
         {0, 0, 0, 0, 0}, // RARM
         {0, 0, 0, 0, 0}, // BOTH_ARMS
-        //{0, 0, 0, 0, 0}, // WALK_TO
         {0, 0, 0, 0, 0}, // WALK_TOWARD
         {0, 0, 0, 0, 0}  // STOP
     };
@@ -193,7 +193,6 @@ private:
     boost::shared_ptr<AL::ALAutonomousMovesProxy> automoProxy;
     //boost::shared_ptr<AL::ALRobotPostureProxy> postureProxy;
 
-
     int matlabTCPSocket;
 
     bool lHandState= false, rHandState = false;
@@ -201,11 +200,13 @@ private:
     HapticWand hapticWand;
     bool hapticWandForceEnabled = false;
     SetPoint setPoint;
-    std::atomic<FeedbackMode> newFbModeAtmc;
-    FeedbackMode fbMode;
+    std::atomic<FeedbackMode> curFbMode, newFbMode;
+    double manipulability, fbStartTime;
+    bool fbCooldown = false;
+    const float manipThreshold = 30.0f;
     PositionController positionController;
     double forceDivider = 1.0, forceDividerStep;
-    TeleopMode curMode; // Current mode
+    TeleopMode curTeleopMode; // Current mode
     ColumnVector<5> lastSamples[MANIP_MODES];
 
     std::chrono::system_clock::time_point tm;
