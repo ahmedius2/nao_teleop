@@ -23,8 +23,10 @@ set(_srcs
     setpoint.cpp
     hapticlimits.h
     naolimits.h
-    HapticTeleop.cpp
+    NAO_jacob0.h
+    NAO_jacob0.cpp
     HapticTeleop.h
+    HapticTeleop.cpp
     main.cpp)
 
 # Create a executable named HapticTeleop

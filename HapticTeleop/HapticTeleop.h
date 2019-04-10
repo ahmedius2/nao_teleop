@@ -33,16 +33,17 @@
 #include "znm-core_global.h"
 #include "naolimits.h"
 
-#define NAO_IP_ADDR "10.1.18.12"
-//#define NAO_IP_ADDR "192.168.43.204"
+#define DEBUG
 
-#define MATLAB_TCP_PORT 19345
+#define NAO_IP_ADDR "10.1.18.67"
+//#define NAO_IP_ADDR "10.42.0.246"
 
 #define NUM_OF_ARM_ANGLES 6
 
-#define INPUT_CHECK_PERIOD_SEC 0.1
-#define FB_IMPOSE_TIME 0.3
-#define FB_TOTAL_TIME 3.0
+#define FB_IMPOSE_TIME 0.30
+#define FB_TOTAL_TIME 2.00
+
+#define CALL_TIME_MS 400
 
 #define MANIP_MODES 4 // Manipulation modes
 #define ALL_MODES (MANIP_MODES+2)
@@ -109,7 +110,8 @@ private:
                     ht->commQueue.front()();
                     ht->commQueue.pop();
                 }
-
+                std::this_thread::sleep_for(
+                            std::chrono::milliseconds((int)ht->sleepAmountMs));
             }
 
         }
@@ -128,10 +130,9 @@ private:
     void openOrCloseHand(bool isOpen, std::string hand);
     inline void enableForceIfDisabled(double dividorStep);
     inline void disableForce();
-    bool areOfAnyFeetBumpersPressed();
+    bool areOfAnyFeetBumpersPressed(std::vector<float>& bumpersOutp);
     void hapticGoToPosBlocking(double threshold);
-    void connectToMATLAB();
-    void disconnectFromMATLAB();
+
 
     inline unsigned msToTicks(unsigned milliseconds){
         return frequency() * milliseconds * 0.001;
@@ -144,7 +145,7 @@ private:
     NetworkTask *commTask; // communication thread
 
     // ----- Log Variables -----
-    ColumnVector<5> F;
+    ColumnVector<5> F, manipF;
     ColumnVector<5> w;      // current world position.
     ColumnVector<5> w_temp;
     ColumnVector<5> wd;     // desired world position.
@@ -155,18 +156,25 @@ private:
     double modeSelectedByUser;
     double rHandStateFromUser, lHandStateFromUser, wbStateFromUser;
     double distBetwArms;
+    double armSpeed, sleepAmountMs;
 
-    bool buttonState = false;
+    //bool buttonState = false;
+    double buttonState = false;
 
     //predefined angles for arms
     const float predefinedArmAngles[NUM_OF_ARM_ANGLES*2] = {
         1.38503, -0.0193124, -1.54517, -1.37153, 0.0280995, 0,
         1.38503, 0.0193124, 1.54517, 1.37153, -0.0280997, 0};
+    //const float predefinedArmAngles[NUM_OF_ARM_ANGLES*2] = {
+    //    0, 0.5062, 0, -0.7897, 0, 0,
+    //    0, -0.5062, 0, 0.7897, 0, 0
+    //};
+
     std::vector<float> preArmAnglesVec;
 
     // ----- Variables -----
     double mappingCoefs[ALL_MODES][HAPTIC_AXES] = {
-        {1, 1, 1, 1.8392, 0.1788},  // HEAD
+        {1, 1, 1, 1/*1.8392*/, 1/*0.1788*/},  // HEAD
         {0.5, 0.5, 0.5, 1.176,  1}, // LARM
         {0.5, 0.5, 0.5, 1.176,  1}, // RARM
         {0.5, 0.5, 0.5, 1.176,  1}, // BOTH_ARMS
@@ -174,9 +182,9 @@ private:
         {1, 1, 1, 1,      1} // STOP
     };
     double mappingBias[ALL_MODES][HAPTIC_AXES] = {
-        {0, 0, 0, 0, -0.0651454}, //HEAD
-        {0, 0, 0, 0, 0}, // LARM
-        {0, 0, 0, 0, 0}, // RARM
+        {0, 0, 0, 0, 0/*-0.0651454*/}, //HEAD
+        {0.05, 0, 0, 0, 0}, // LARM
+        {-0.05, 0, 0, 0, 0}, // RARM
         {0, 0, 0, 0, 0}, // BOTH_ARMS
         {0, 0, 0, 0, 0}, // WALK_TOWARD
         {0, 0, 0, 0, 0}  // STOP
@@ -184,16 +192,13 @@ private:
 
     const char *chainStr[NAO_CHAINS] = { "Head","LArm","RArm" };
     AL::Math::Transform initTfRArm, initTfLArm;
-    std::vector<float> initRobotPosWalk;
+    //std::vector<float> initRobotPosWalk;
 
     boost::shared_ptr<AL::ALBroker> broker;
     boost::shared_ptr<AL::ALMotionProxy> motionProxy;
     boost::shared_ptr<AL::ALBasicAwarenessProxy> awarenessProxy;
     boost::shared_ptr<AL::ALMemoryProxy> memoryProxy;
     boost::shared_ptr<AL::ALAutonomousMovesProxy> automoProxy;
-    //boost::shared_ptr<AL::ALRobotPostureProxy> postureProxy;
-
-    int matlabTCPSocket;
 
     bool lHandState= false, rHandState = false;
     bool wbState = false;
@@ -201,15 +206,21 @@ private:
     bool hapticWandForceEnabled = false;
     SetPoint setPoint;
     std::atomic<FeedbackMode> curFbMode, newFbMode;
-    double manipulability, fbStartTime;
+    double fbStartTime, manipLRArms[2]; // log
     bool fbCooldown = false;
-    const float manipThreshold = 30.0f;
+    const double manipThreshold = 32.0;
     PositionController positionController;
-    double forceDivider = 1.0, forceDividerStep;
-    TeleopMode curTeleopMode; // Current mode
     ColumnVector<5> lastSamples[MANIP_MODES];
+    double forceDivider = 1.0, forceDividerStep;
+    std::atomic<TeleopMode> curTeleopMode;
+    double opCoords[5];
 
-    std::chrono::system_clock::time_point tm;
+#ifdef DEBUG
+    double cHeadAnglesLog[2], curFbModeLog, manipLRArmsLog[2];
+    double tLArmPosLog[6], tRArmPosLog[6], cLArmPosLog[6], cRArmPosLog[6];
+    double curTeleopModeLog, cLArmAnglesLog[6], cRArmAnglesLog[6];
+    double bumpersLog[4], fbCooldownLog, cWorldPosLog[3], cVelLog[3];
+#endif
 };
 
 #endif
