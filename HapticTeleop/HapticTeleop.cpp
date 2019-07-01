@@ -45,6 +45,11 @@ int HapticTeleop::initialize()
                 new AL::ALAutonomousMovesProxy(broker));
     automoProxy->setBackgroundStrategy("none");
 
+    locoMoveConf = motionProxy->getMoveConfig("Default");
+    //locoMoveConf[3][1] = 0.25; //MaxStepFrequency
+    //locoMoveConf[4][1] = 0.040; //
+
+
     //postureProxy = boost::shared_ptr<AL::ALRobotPostureProxy>(
     //            new AL::ALRobotPostureProxy(broker));
 
@@ -77,22 +82,20 @@ int HapticTeleop::initialize()
     registerControlVariable( &wbStateFromUser,    "_wholeBodyState", 1, 1);
     registerControlVariable( &distBetwArms,       "_distBetwArms",   1, 1);
 
-    registerControlVariable( &armSpeed, "Arm speed", 1, 1);
+    //registerControlVariable( &armSpeed, "Arm speed", 1, 1);
     registerControlVariable( &sleepAmountMs, "Sleep amount", 1, 1);
 
-    sleepAmountMs=200;
-    armSpeed = 0.6;
+    sleepAmountMs = 200;
+    armSpeed = 0.2;
     rHandStateFromUser = lHandStateFromUser = wbStateFromUser = 0;
     modeSelectedByUser = STOP;
     curTeleopMode = STOP;
-    distBetwArms = 0.05;
-
+    distBetwArms = 0.07;
     commTask = new NetworkTask(this);
     commTask->runTask();
 
     return 0;
 }
-
 /**
  * This function is called when the START button is pushed from zenom.
  *
@@ -128,11 +131,13 @@ int HapticTeleop::start()
     motionProxy->stiffnessInterpolation(
                 AL::ALValue::array("Head","LArm","RArm"), 1.0f, 0.5f);
     // Go to predefined pose, left arm + right arm
-    preArmAnglesVec.assign(predefinedArmAngles,
-                           predefinedArmAngles+NUM_OF_ARM_ANGLES*2);
-    motionProxy->angleInterpolationWithSpeed( AL::ALValue::array("LArm","RArm"),
-                                              preArmAnglesVec,
-                                              0.5f);
+    //preArmAnglesVec.assign(predefinedArmAngles,
+    //                       predefinedArmAngles+NUM_OF_ARM_ANGLES*2);
+    //motionProxy->angleInterpolationWithSpeed( AL::ALValue::array("LArm","RArm"),
+    //                                          preArmAnglesVec,
+    //                                          0.5f);
+
+    motionProxy->moveInit();
 
     initTfRArm = AL::Math::Transform(
                 motionProxy->getTransform("RArm", FRAME_TORSO, false));
@@ -145,6 +150,8 @@ int HapticTeleop::start()
     manipLRArms[1] = 0;
     manipLRArms[0] = 0;
 
+    motionProxy->openHand("RHand");
+    motionProxy->openHand("LHand");
 
     return 0;
 }
@@ -185,9 +192,9 @@ int HapticTeleop::doloop()
     }
 
 #ifdef DEBUG
-//    curTeleopModeLog = curTeleopMode;
-//    curFbModeLog = curFbMode;
-//    fbCooldownLog = fbCooldown;
+    curTeleopModeLog = curTeleopMode;
+    curFbModeLog = curFbMode;
+    fbCooldownLog = fbCooldown;
 //    std::cerr << "Teleop mode:" << curTeleopMode <<
 //                 " Feedback mode:" << curFbMode << " Cooldown:" <<
 //                 fbCooldown << " hapticWandForceEnabled:" <<
@@ -360,6 +367,27 @@ void HapticTeleop::checkInputAndSetMode()
         std::cout << "Mode switched to " << curTeleopMode << std::endl;
         commQueue.push([this](){
             motionProxy->stopMove();
+            if(curTeleopMode == WALK_TOWARD){
+                AL::Math::Transform tfRArm = AL::Math::Transform(
+                            motionProxy->getTransform("RArm", FRAME_TORSO, false));
+                AL::Math::Transform tfLArm = AL::Math::Transform(
+                            motionProxy->getTransform("LArm", FRAME_TORSO, false));
+                motionProxy->moveInit();
+                motionProxy->transformInterpolations(AL::ALValue::array("RArm","LArm"),
+                  FRAME_TORSO,AL::ALValue::array(tfRArm.toVector(),tfLArm.toVector()),
+                  AL::ALValue::array(63,63), AL::ALValue::array(0.4,0.4));
+                motionProxy->setMoveArmsEnabled(false,false);
+            }
+            else{
+                motionProxy->setMoveArmsEnabled(true,true);
+            }
+	
+            motionProxy->setBreathEnabled("Body", false);
+	    motionProxy->setIdlePostureEnabled("Body", false);
+	    automoProxy->setBackgroundStrategy("none");
+	    awarenessProxy->stopAwareness();
+        motionProxy->setMotionConfig(AL::ALValue::array(
+                   AL::ALValue::array("ENABLE_FOOT_CONTACT_PROTECTION", true)));
         });
     }
 }
@@ -413,9 +441,13 @@ void HapticTeleop::moveRobot()
             ALValue names = ALValue::array("LArm","RArm");
             if(callCounter++ * sleepAmountMs >= CALL_TIME_MS){
                 motionProxy->setTransforms( "LArm", FRAME_TORSO,
-                        lArmVec, armSpeed, 15);
+                        lArmVec, armSpeed, 7);//15);
                 motionProxy->setTransforms( "RArm", FRAME_TORSO,
-                        rArmVec, armSpeed, 15);
+                        rArmVec, armSpeed, 7);//15);
+                motionProxy->setAngles(
+                            ALValue::array("RHipYawPitch","LHipYawPitch"),
+                            ALValue::array(opCoords[4],opCoords[4]),
+                            0.1);
                 callCounter=0;
             }
 
@@ -427,9 +459,6 @@ void HapticTeleop::moveRobot()
             manipLRArms[1] =
                 sqrt(eigs.real().maxCoeff()) / sqrt(eigs.real().minCoeff());
 
-            std::cout << "Manipulability right arm:" << manipLRArms[1] <<
-                         std::endl;
-
             if((float)manipLRArms[1] < manipThreshold*1.25){
                 // With a high probability, this part is not needed,?????
                 NaoLArm_jacob0(jacob,armAnglesVec.data()+6);
@@ -437,8 +466,6 @@ void HapticTeleop::moveRobot()
                 manipLRArms[0] = sqrt(eigs.real().maxCoeff()) /
                         sqrt(eigs.real().minCoeff());
 
-                std::cout << "Manipulability left arm:" << manipLRArms[0] <<
-                             std::endl;
             }
 
             // Feedback
@@ -492,6 +519,10 @@ void HapticTeleop::moveRobot()
                 motionProxy->setTransforms(armName, FRAME_TORSO,
                         targetTfArm.toVector(), armSpeed, CONTROL_AXES);
                 callCounter = 0;
+                motionProxy->setAngles(
+                            ALValue::array("RHipYawPitch","LHipYawPitch"),
+                            ALValue::array(opCoords[4],opCoords[4]),
+                            0.1);
             }
 
             auto armAnglesVec = motionProxy->getAngles(armName, false);
@@ -569,30 +600,47 @@ void HapticTeleop::moveRobot()
         }
         else if(curTeleopMode == WALK_TOWARD){ // new system???
             static std::vector<float> cBumpers(4);
-#ifdef DEBUG
-            cWorldPos = motionProxy->getRobotPosition(false);
-            cVel = motionProxy->getRobotVelocity();
-            if(areOfAnyFeetBumpersPressed(cBumpers) && opCoords[0] > 0.2){
-#else
-            if(opCoords[0] > 0.2 && areOfAnyFeetBumpersPressed(cBumpers)){
-#endif
+            AL::ALValue keys = AL::ALValue::array(
+                "Device/SubDeviceList/LFoot/Bumper/Right/Sensor/Value",
+                "Device/SubDeviceList/RFoot/Bumper/Right/Sensor/Value",
+                "Device/SubDeviceList/LFoot/Bumper/Left/Sensor/Value",
+                "Device/SubDeviceList/RFoot/Bumper/Left/Sensor/Value");
+            cBumpers = memoryProxy->getListData(keys);
+            //cWorldPos = motionProxy->getRobotPosition(false);
+            //cVel = motionProxy->getRobotVelocity();
+            const double thrs = 0.05;
+            double x = opCoords[4];
+            double theta = opCoords[3];
+            static double prevX=0, prevTheta=0;
+            if(x > thrs && areOfAnyFeetBumpersPressed(cBumpers)){
                 motionProxy->stopMove();
                 newFbMode = FEEDBACK_START; // override
+                std::cout << "Road blocked " << std::endl;
             }
             else {
-                if(opCoords[0] >= -0.2 && opCoords[0] <= 0.2 &&
-                    opCoords[1] >= -0.2 && opCoords[1] <= 0.2)
+                if(x >= -thrs && x <= thrs && theta >= -thrs && theta <= thrs)
                 { // stop
                     motionProxy->stopMove();
+                    std::cout << "Stop " << std::endl;
                 }
-                else if (opCoords[0] > 0.2 || opCoords[0] < -0.2){
-                    // forward or backward
-                    motionProxy->moveToward(opCoords[0], 0, opCoords[1]);
+                else if(callCounter++ * sleepAmountMs >= CALL_TIME_MS){
+                    if ((theta > thrs || theta < -thrs)){// && abs(theta - prevTheta) > 0.1) {
+                        motionProxy->moveToward(0.1, 0, theta*1.25, locoMoveConf);
+                        std::cout << "Crab walking, " << theta << std::endl;
+                        prevX = x;
+                        prevTheta = theta;
+                    } else if ((x > thrs || x < -thrs)){// && abs(x - prevX) > 0.1){
+                        // forward or backward
+                        motionProxy->moveToward(x, 0, 0,locoMoveConf);
+                        std::cout << "Fwd/Bkwd, " << x << " " << theta << std::endl;
+                        prevX = x;
+                        prevTheta = theta;
+                    }
+
+                    callCounter=0;
                 }
-                else if (opCoords[1] > 0.2 || opCoords[1] < -0.2){
-                    // walk horizontal (crab walk :))
-                    motionProxy->moveToward(0, opCoords[1], 0);
-                }
+
+
                 newFbMode = NO_FEEDBACK_START;
             }
         }
@@ -630,7 +678,7 @@ void HapticTeleop::moveRobot()
     }
     else if (curTeleopMode == WALK_TOWARD){
         for(int i=0; i<4; ++i)
-            bumpersLog[i] = (double)cBumpers[i];
+            bumpersLog[i] = ceil((double)cBumpers[i]);
         std::copy(cWorldPos.begin(), cWorldPos.end(), cWorldPosLog);
         std::copy(cVel.begin(), cVel.end(), cVelLog);
     }
@@ -679,13 +727,7 @@ void HapticTeleop::hapticGoToPosBlocking(double threshold)
     }
 }
 
-bool HapticTeleop::areOfAnyFeetBumpersPressed(std::vector<float>& bumpersOutp)
+bool HapticTeleop::areOfAnyFeetBumpersPressed(std::vector<float>& bumpers)
 {
-    AL::ALValue keys = AL::ALValue::array(
-        "Device/SubDeviceList/LFoot/Bumper/Right/Sensor/Value",
-        "Device/SubDeviceList/RFoot/Bumper/Right/Sensor/Value",
-        "Device/SubDeviceList/LFoot/Bumper/Left/Sensor/Value",
-        "Device/SubDeviceList/RFoot/Bumper/Left/Sensor/Value");
-    bumpersOutp = memoryProxy->getListData(keys);
-    return bumpersOutp[0] || bumpersOutp[1] || bumpersOutp[2] || bumpersOutp[3];
+    return bumpers[0] || bumpers[1] || bumpers[2] || bumpers[3];
 }

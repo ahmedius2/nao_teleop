@@ -32,18 +32,19 @@
 #include "positioncontroller.h"
 #include "znm-core_global.h"
 #include "naolimits.h"
-
 #define DEBUG
 
-#define NAO_IP_ADDR "10.1.18.67"
-//#define NAO_IP_ADDR "10.42.0.246"
+//#define NAO_IP_ADDR "10.1.18.28"
+//#define NAO_IP_ADDR "169.254.67.213"
+#define NAO_IP_ADDR "169.254.232.52"
+//#define NAO_IP_ADDR "10.1.40.218"
 
 #define NUM_OF_ARM_ANGLES 6
 
 #define FB_IMPOSE_TIME 0.30
-#define FB_TOTAL_TIME 2.00
+#define FB_TOTAL_TIME 4.00
 
-#define CALL_TIME_MS 400
+#define CALL_TIME_MS 1000
 
 #define MANIP_MODES 4 // Manipulation modes
 #define ALL_MODES (MANIP_MODES+2)
@@ -173,24 +174,26 @@ private:
     std::vector<float> preArmAnglesVec;
 
     // ----- Variables -----
+    // x y z pitch roll
     double mappingCoefs[ALL_MODES][HAPTIC_AXES] = {
-        {1, 1, 1, 1/*1.8392*/, 1/*0.1788*/},  // HEAD
-        {0.5, 0.5, 0.5, 1.176,  1}, // LARM
-        {0.5, 0.5, 0.5, 1.176,  1}, // RARM
-        {0.5, 0.5, 0.5, 1.176,  1}, // BOTH_ARMS
-        {1.0/HAPTIC_MAX_X, 1.0/((HAPTIC_MAX_Y-HAPTIC_MIN_Y)/2.0), 1,1,1},// WALK_TOWARD
-        {1, 1, 1, 1,      1} // STOP
+        {1, 1, 1, 1, 1},  // HEAD
+        {0.5, 0.5, 0.5, -0.35,  1}, // LARM
+        {0.5, 0.5, 0.5, -0.35,  1}, // RARM
+        {0.5, 0.5, 0.5, -0.35,  1}, // BOTH_ARMS
+        {1, 1, 1, 1 ,0.3}, // WALK_TOWARD
+        {1, 1, 1, 1, 1} // STOP
     };
+
     double mappingBias[ALL_MODES][HAPTIC_AXES] = {
-        {0, 0, 0, 0, 0/*-0.0651454*/}, //HEAD
-        {0.05, 0, 0, 0, 0}, // LARM
-        {-0.05, 0, 0, 0, 0}, // RARM
-        {0, 0, 0, 0, 0}, // BOTH_ARMS
+        {0, 0, 0, 0, 0}, //HEAD
+        {0.05, -0.05, 0, -0.1, 0}, // LARM
+        {-0.05, -0.05, 0, -0.1, 0}, // RARM
+        {0, -0.03, 0, -0.1, 0}, // BOTH_ARMS
         {0, 0, 0, 0, 0}, // WALK_TOWARD
         {0, 0, 0, 0, 0}  // STOP
     };
 
-    const char *chainStr[NAO_CHAINS] = { "Head","LArm","RArm" };
+    const char *chainStr[NAO_CHAINS] = { "Head", "LArm", "RArm" };
     AL::Math::Transform initTfRArm, initTfLArm;
     //std::vector<float> initRobotPosWalk;
 
@@ -208,11 +211,12 @@ private:
     std::atomic<FeedbackMode> curFbMode, newFbMode;
     double fbStartTime, manipLRArms[2]; // log
     bool fbCooldown = false;
-    const double manipThreshold = 32.0;
+    const double manipThreshold = 40.0;
     PositionController positionController;
     ColumnVector<5> lastSamples[MANIP_MODES];
     double forceDivider = 1.0, forceDividerStep;
     std::atomic<TeleopMode> curTeleopMode;
+    AL::ALValue locoMoveConf;
     double opCoords[5];
 
 #ifdef DEBUG
